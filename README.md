@@ -1,5 +1,9 @@
 # MSiA423 Template Repository
 
+Hanyu Cai
+
+QA: Dian Yu
+
 <!-- toc -->
 
 - [Directory structure](#directory-structure)
