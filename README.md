@@ -1,4 +1,4 @@
-# MSiA423 Template Repository
+# MSiA423 Repository -- Hanyu Cai
 
 Hanyu Cai
 
