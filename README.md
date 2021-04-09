@@ -5,9 +5,11 @@ Hanyu Cai
 QA: Dian Yu
 
 **Vision**:
+
 As one of the most favorite snacks in the United States, chocolate bar was consumed in an impressive amount in the United States, not to mention that the global chocolate industry worth $100 billion dollars. There are around 2000+ chocolate bar products, with different combinations of cocoa bean, cocoa percentage, ingredients and flavor, in the United States market nowadays. Thus, when chocolate manufacturers start to expand their market, or when consumers want to explore new chocolate bar product, it can be hard to choose the right product from such a great variety of chocolate bars. This application aims to recommend user chocolate bar and give a predicted rating for the taste of chocolate bar combination they enter. 
 
 **Mission**:
+
 Users would be prompted to choose their preferences over chocolate bar – such as the chocolate bean type, cocoa percentage, and chocolate bar flavor. Based on information users provided, the application would give users a rating about the possible chocolate bar combination they choose, and recommends three possible chocolate bars to the user according to their taste. 
 
 Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020
@@ -15,9 +17,13 @@ Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020
 The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes. Hold chocolate company name, country of the chocolate bean.
 
 **Metric**:
+
 1.Machine learning performance metric:
+
 Since recommendation system is unsupervised learning, there is no right or wrong about the recommendation. To make sure that the chocolate bar recommended is both tasty and suits the user’s personal preference, I would use the rating score and similarity score as measurement metrics for the model. In terms of rating, I would use R2 score to measure the model – an R2 score above 0.65 would be acceptable in this scenario. 
+
 2. Business metric: 
+
 Use A/B testing to examine the product rating if people choose chocolate bar without the application. If there is a significant growth in rating at the group of consumers that use our recommender system to make their purchase choice, then our application is proved to have good business value.
 
 ## Proj Template 
