@@ -15,9 +15,10 @@ Users would be prompted to choose their preferences over chocolate bar – such 
 The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes. Hold chocolate company name, country of the chocolate bean.
 
 ## Metric:
+1.Machine learning performance metric:
 Since recommendation system is unsupervised learning, there is no right or wrong about the recommendation. To make sure that the chocolate bar recommended is both tasty and suits the user’s personal preference, I would use the rating score and similarity score as measurement metrics for the model. In terms of rating, I would use R2 score to measure the model – an R2 score above 0.65 would be acceptable in this scenario. 
-
-
+2. Business metric: 
+Use A/B testing to examine the product rating if people choose chocolate bar without the application. If there is a significant growth in rating at the group of consumers that use our recommender system to make their purchase choice, then our application is proved to have good business value.
 
 ## Proj Template 
 <!-- toc -->
