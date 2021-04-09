@@ -15,7 +15,6 @@ The dataset contains information from 2006 to 2020 in 66 countries about over 17
 
 Metric:
 Since recommendation system is unsupervised learning, there is no right or wrong about the recommendation. To make sure that the chocolate bar recommended is both tasty and suits the user’s personal preference, I would use the rating score and similarity score as measurement metrics for the model. In terms of rating, I would use R2 score to measure the model – an R2 score above 0.65 would be acceptable in this scenario. 
-![image](https://user-images.githubusercontent.com/44302735/114207709-4a55b200-9922-11eb-8783-c13d38aa612e.png)
 
 
 <!-- toc -->
