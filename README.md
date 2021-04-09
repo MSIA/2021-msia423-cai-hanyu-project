@@ -13,8 +13,7 @@ As one of the most favorite snacks in the United States, chocolate bar was consu
 Users would be prompted to choose their preferences over chocolate bar – such as the chocolate bean type, cocoa percentage, and chocolate bar flavor. Based on information users provided, the application would give users a rating about the possible chocolate bar combination they choose, and recommends three possible chocolate bars to the user according to their taste. 
 
 Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020
-
-The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes. Hold chocolate company name, country of the chocolate bean.
+The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes, chocolate company name, country of the chocolate bean...etc
 
 **Metric**:
 
@@ -22,7 +21,7 @@ The dataset contains information from 2006 to 2020 in 66 countries about over 17
 
 Since recommendation system is unsupervised learning, there is no right or wrong about the recommendation. To make sure that the chocolate bar recommended is both tasty and suits the user’s personal preference, I would use the rating score and similarity score as measurement metrics for the model. In terms of rating, I would use R2 score to measure the model – an R2 score above 0.65 would be acceptable in this scenario. 
 
-2. Business metric: 
+2.Business metric: 
 
 Use A/B testing to examine the product rating if people choose chocolate bar without the application. If there is a significant growth in rating at the group of consumers that use our recommender system to make their purchase choice, then our application is proved to have good business value.
 
