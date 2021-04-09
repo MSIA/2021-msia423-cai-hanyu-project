@@ -10,7 +10,7 @@ As one of the most favorite snacks in the United States, chocolate bar was consu
 ## Mission:
 Users would be prompted to choose their preferences over chocolate bar – such as the chocolate bean type, cocoa percentage, and chocolate bar flavor. Based on information users provided, the application would give users a rating about the possible chocolate bar combination they choose, and recommends three possible chocolate bars to the user according to their taste. 
 
-## Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020
+Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020
 
 The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes. Hold chocolate company name, country of the chocolate bean.
 
