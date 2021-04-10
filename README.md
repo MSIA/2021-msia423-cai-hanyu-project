@@ -11,6 +11,7 @@ As one of the most favorite snacks in the United States, the chocolate bar was c
 **Mission**:
 
 Users would be prompted to choose their preferences over chocolate bars – such as the chocolate bean type, cocoa percentage, and chocolate bar flavor. Based on the information users provided, the application would give users a rating about the possible chocolate bar combination they choose and recommend three possible chocolate bars to the user according to their taste. The application would use a recommender system for recommendation and regression for rating prediction to achieve this purpose.
+
 Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020 The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes, chocolate company name, country of the chocolate bean, etc.
 
 **Metric**:
