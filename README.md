@@ -4,6 +4,8 @@ Hanyu Cai
 
 QA: Dian Yu
 
+
+
 **Vision**:
 
 As one of the most favorite snacks in the United States, the chocolate bar was consumed in an impressive amount in the United States, not to mention that the global chocolate industry worth 100 billion dollars. There are around 2000+ chocolate bar products, with different combinations of the cocoa bean, cocoa percentage, ingredients, and flavor, in the United States market. Thus, when chocolate manufacturers start to expand their market, or when consumers want to explore new chocolate bar products, it can be hard to choose the right product from such a great variety of chocolate bars. This application aims to recommend users chocolate bars and give a predicted rating for the taste of the chocolate bar combination they enter.
