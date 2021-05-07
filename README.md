@@ -32,18 +32,13 @@ I can use A/B testing to examine the product rating if people choose chocolate b
 
 - [Directory structure](#directory-structure)
 - [Running the app](#running-the-app)
-  * [1. Initialize the database](#1-initialize-the-database)
-    + [Create the database with a single song](#create-the-database-with-a-single-song)
-    + [Adding additional songs](#adding-additional-songs)
-    + [Defining your engine string](#defining-your-engine-string)
-      - [Local SQLite database](#local-sqlite-database)
-  * [2. Configure Flask app](#2-configure-flask-app)
-  * [3. Run the Flask app](#3-run-the-flask-app)
-- [Running the app in Docker](#running-the-app-in-docker)
-  * [1. Build the image](#1-build-the-image)
-  * [2. Run the container](#2-run-the-container)
-  * [3. Kill the container](#3-kill-the-container)
-  * [Workaround for potential Docker problem for Windows.](#workaround-for-potential-docker-problem-for-windows)
+  * [1. Build docker image](#1-build-docker-image)
+      - [Add environment variables to access s3](#add-environment-variables-to-access-s3)
+      - [Uploading raw data to s3](#uploading-raw-data-to-s3)
+  * [2. Upload data to S3 bucket](#2-upload-data-to-s3-bucket)
+  * [3. Create MYSQL database](#3-create-mysql-database)
+     - [Create database on local](#create-database-on-local)
+     - [Create database on RDS](#create-database-on-rds)
 
 <!-- tocstop -->
 
@@ -109,7 +104,7 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 
 **The raw data is located at  data/chocolate_data/chocolate.csv**
 
-#### Uploading raw data from data/chocolate_data/chocolate.csv to s3 
+#### Uploading raw data to s3 
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate src/s3.py`
 
 ### 3. Create MYSQL database
@@ -117,7 +112,7 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 #### Create database on local
 `docker run chocolate run.py create_db`
 
-#### Create the database on RDS 
+#### Create database on RDS 
 Specify the environment variables in .mysqlconfig file
 
 ```
