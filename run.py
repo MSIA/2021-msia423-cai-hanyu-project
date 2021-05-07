@@ -1,6 +1,6 @@
 import argparse
-
 import logging.config
+
 logging.config.fileConfig('config/logging/local.conf')
 logger = logging.getLogger('chocolate bars')
 
@@ -38,7 +38,6 @@ if __name__ == '__main__':
     sb_ingest.add_argument("--third_taste",help="third taste of chocolate bar added")
     sb_ingest.add_argument("--fourth_taste",help="fourth taste of chocolate bar added")
 
-    
     args = parser.parse_args()
     sp_used = args.subparser_name
     if sp_used == 'create_db':

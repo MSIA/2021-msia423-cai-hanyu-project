@@ -11,9 +11,10 @@ logger.setLevel("INFO")
 
 Base = declarative_base()
 
-
 class Chocolates(Base):
-    """Create a data model for the database to load chocolate bars rating data"""
+    """
+    Create a data model for the database to load chocolate bars rating data
+    """
 
     __tablename__ = 'chocolates'
 
@@ -35,7 +36,7 @@ class Chocolates(Base):
     second_taste = Column(String(25), unique=False, nullable=True)
     third_taste = Column(String(25), unique=False, nullable=True)
     fourth_taste = Column(String(25), unique=False, nullable=True)
-    
+
     def __repr__(self):
         return '<Chocolate Bar Ref Number %r>' % ref
 
@@ -45,7 +46,7 @@ def create_db(engine_string: str):
     Create database from provided engine string
 
     Args:
-        engine_string: str - Engine string
+        engine_string (str): Engine string
 
     Returns: None
     """
@@ -54,27 +55,29 @@ def create_db(engine_string: str):
     Base.metadata.create_all(engine)
     logger.info("Database created.")
 
+
 def delete_db(engine_string: str):
     """
     Delete database from provided engine string.
     
     Args:
-        engine_string: str - Engine string
-        
+        engine_string (str): Engine string
+
     Returns: None
     """
     engine = sqlalchemy.create_engine(engine_string)
 
     Base.metadata.drop_all(engine)
     logger.info("Database deleted")
-    
+
+
 class ChocolateManager:
 
     def __init__(self, app=None, engine_string=None):
         """
         Args:
-            app: Flask - Flask app
-            engine_string: str - Engine string
+            app (str): Flask - Flask app
+            engine_string (str): Engine string
         """
         if app:
             self.db = SQLAlchemy(app)
@@ -87,25 +90,50 @@ class ChocolateManager:
             raise ValueError("Need either an engine string or a Flask app to initialize")
 
     def close(self):
-        """Closes session
+        """
+        Closes session
 
         Returns: None
-
         """
         self.session.close()
 
-    def add_chocolate(self, id, ref, company, country_of_bean_origin, cocoa_percent, rating,
-                      counts_of_ingredients, beans, cocoa_butter, vanilla, lecithin, salt, sugar,
-                      sweetener_wirhout_sugar,first_taste,second_taste,third_taste,fourth_taste):
-        
-        """Seeds an existing database with additional chocolate bars."""
+    def add_chocolate(self, id: int, ref: int, company: str, country_of_bean_origin: str, cocoa_percent: float,
+                      rating: float, counts_of_ingredients: int, beans: str, cocoa_butter: str, vanilla: str,
+                      lecithin: str, salt: str, sugar: str, sweetener_without_sugar: str, first_taste: str,
+                      second_taste: str, third_taste: str, fourth_taste: str):
+
+        """
+        Seeds an existing database with additional chocolate bars
+
+        Args:
+            id (int): The primary key for table chocolate
+            ref (int): Reference number for chocolate bar added
+            company (str): Company for chocolate bar added
+            country_of_bean_origin (str): Country for the chocolate bean
+            cocoa_percent (float): Cocoa percentage for chocolate bar added
+            rating (float): Rating for chocolate bar added
+            counts_of_ingredients (int): Counts of ingredients for chocolate bar added
+            beans (str): Bean type for chocolate bar added
+            cocoa_butter (str): if cocoa butter is in the chocolate bar
+            vanilla (str): if vanilla is in the chocolate bar
+            lecithin (str): if lecithin is in the chocolate bar
+            salt (str): if salt is in the chocolate bar
+            sugar (str): if sugar is in the chocolate bar
+            sweetener_without_sugar (str): if sweetener_wirhout_sugar is in the chocolate bar
+            first_taste (str): first taste of chocolate bar added
+            second_taste (str): second taste of chocolate bar added
+            third_taste (str): third taste of chocolate bar added
+            fourth_taste (str): fourth taste of chocolate bar added
+
+        Returns:None
+        """
 
         session = self.session
         bar = Chocolates(id=id, ref=ref, company=company, country_of_bean_origin=country_of_bean_origin,
-                           cocoa_percent=cocoa_percent, rating=rating,counts_of_ingredients=counts_of_ingredients,
-                           beans=beans, cocoa_butter=cocoa_butter, vanilla=vanilla, lecithin=lecithin, salt=salt,
-                           sugar=sugar,sweetener_wirhout_sugar=sweetener_wirhout_sugar,first_taste=first_taste,
-                           second_taste=second_taste,third_taste=third_taste,fourth_taste=fourth_taste)
+                         cocoa_percent=cocoa_percent, rating=rating, counts_of_ingredients=counts_of_ingredients,
+                         beans=beans, cocoa_butter=cocoa_butter, vanilla=vanilla, lecithin=lecithin, salt=salt,
+                         sugar=sugar, sweetener_without_sugar=sweetener_without_sugar, first_taste=first_taste,
+                         second_taste=second_taste, third_taste=third_taste, fourth_taste=fourth_taste)
         session.add(bar)
         session.commit()
         logger.info("chocolate bar ref number %s from company %s added to database", ref, company)
