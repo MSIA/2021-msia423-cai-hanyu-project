@@ -114,24 +114,24 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 
 To specify the enginee string as environment variable, using 
 ```
-export SQLALCHEMY_DATABASE_URI="ENGINE_STRING"
+export SQLALCHEMY_DATABASE_URI = <ENGINE_STRING>
 docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db
 ```
 
 #### Create database on RDS 
-Specify the environment variables in .mysqlconfig file
+Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
 
 ```
-export MYSQL_USER=<RDS Username>
-export MYSQL_PASSWORD=<RDS Password>
-export MYSQL_PORT=3306`
-export MYSQL_DB=msia423_db
-export MYSQL_HOST=<YOUR HOST>
+export MYSQL_USER = <RDS Username>
+export MYSQL_PASSWORD = <RDS Password>
+export MYSQL_PORT = 3306
+export MYSQL_DB = msia423_db
+export MYSQL_HOST = <YOUR HOST>
 ```
 
 Set up the environment variables
 
-`source config/.mysqlconfig`
+`source .mysqlconfig`
 
 Run the following commend to initiate database with name "msia423_db" & create table named "chocolates" on RDS
 
