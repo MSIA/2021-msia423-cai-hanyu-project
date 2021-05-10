@@ -1,7 +1,0 @@
-export MYSQL_USER="admin"
-export MYSQL_PASSWORD="amchy666..."
-export MYSQL_HOST="nw-msia423-hanyu.c74lc6p1kp0h.us-east-1.rds.amazonaws.com"
-export MYSQL_PORT="3306"
-export DATABASE_NAME="msia423_db"
-export MYSQL_DB="msia423_db"
-
