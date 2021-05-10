@@ -126,7 +126,7 @@ export MYSQL_USER=<RDS Username>
 export MYSQL_PASSWORD=<RDS Password>
 export MYSQL_PORT=3306`
 export MYSQL_DB=msia423_db
-export MYSQL_HOST=nw-msia423-hanyu.c74lc6p1kp0h.us-east-1.rds.amazonaws.com
+export MYSQL_HOST=<YOUR HOST>
 ```
 
 Set up the environment variables
