@@ -110,7 +110,13 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 ### 3. Create MYSQL database
 
 #### Create database on local
-`docker run chocolate run.py create_db`
+`docker run -it chocolate run.py create_db`
+
+To specify the enginee string as environment variable, using 
+```
+export SQLALCHEMY_DATABASE_URI="YOUR_ENGINE_STRING"
+docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db
+```
 
 #### Create database on RDS 
 Specify the environment variables in .mysqlconfig file
