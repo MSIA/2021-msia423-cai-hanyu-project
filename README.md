@@ -80,6 +80,9 @@ I can use A/B testing to examine the product rating if people choose chocolate b
 ├── src/                              <- Source data for the project 
 │
 ├── test/                             <- Files necessary for running model tests (see documentation below) 
+│   ├── test_s3.py                    <- Test the s3.py functioning
+│
+├── test/                             <- Files necessary for running model tests (see documentation below)  
 │
 ├── app.py                            <- Flask wrapper for running the model 
 ├── run.py                            <- Simplifies the execution of one or more of the src scripts  
