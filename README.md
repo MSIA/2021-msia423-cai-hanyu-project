@@ -114,7 +114,7 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 
 To specify the enginee string as environment variable, using 
 ```
-export SQLALCHEMY_DATABASE_URI="YOUR_ENGINE_STRING"
+export SQLALCHEMY_DATABASE_URI="ENGINE_STRING"
 docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db
 ```
 
