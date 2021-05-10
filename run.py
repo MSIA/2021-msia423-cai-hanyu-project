@@ -1,11 +1,14 @@
 import argparse
 import logging.config
 
+
 logging.config.fileConfig('config/logging/local.conf')
 logger = logging.getLogger('chocolate bars')
 
+
 from src.more_chocolate_plz import ChocolateManager, create_db
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
+
 
 if __name__ == '__main__':
 

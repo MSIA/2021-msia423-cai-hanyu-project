@@ -6,10 +6,11 @@ from sqlalchemy import Column, Float, Integer, String, MetaData
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
+
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
-
 Base = declarative_base()
+
 
 class Chocolates(Base):
     """
