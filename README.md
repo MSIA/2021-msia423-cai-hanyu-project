@@ -91,7 +91,7 @@ I can use A/B testing to examine the product rating if people choose chocolate b
 
 ## Running the app
 
-**Connect to Northwestern VPN before running the following commends**
+**Connect to Northwestern VPN before running the following commands**
 
 ### 1. Build docker image 
 
@@ -105,7 +105,7 @@ export AWS_ACCESS_KEY_ID = <AWS KEY ID>
 export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 ```
 
-**The raw data is located at  data/chocolate_data/chocolate.csv**
+The raw data is located at  data/chocolate_data/chocolate.csv
 
 #### Uploading raw data to s3 
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload`
@@ -125,6 +125,8 @@ To specify the enginee string, using:
 
 `docker run -it chocolate run.py create_db --engine_string <MY ENGINE STRING>`
 
+(Note: you may also specify enginee sting by setting environment variable SQLALCHEMY_DATABASE_URI)
+ 
 #### Create database on RDS 
 Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
 
@@ -140,6 +142,12 @@ Set up the environment variables
 
 `source .mysqlconfig`
 
-Run the following commend to initiate database with name "msia423_db" & create table named "chocolates" on RDS
+Run the following command to initiate database with name "msia423_db" & create table named "chocolates" on RDS
 
 `docker run -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py create_db`
+
+
+### 4. Test s3.py 
+Run the following command to test in docker container chocolate:
+
+`docker run chocolate -m pytest`
