@@ -125,7 +125,7 @@ To specify the enginee string, using:
 
 `docker run -it chocolate run.py create_db --engine_string <MY ENGINE STRING>`
 
-(Note: you may also specify enginee sting by setting environment variable SQLALCHEMY_DATABASE_URI=<MY ENGINE STRING>)
+(Note: you may also specify enginee sting by setting environment variable SQLALCHEMY_DATABASE_URI)
  
 #### Create database on RDS 
 Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
