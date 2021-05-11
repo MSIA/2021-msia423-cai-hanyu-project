@@ -123,7 +123,7 @@ You can also specify the s3 path & local path using:
 
 To specify the enginee string, using: 
 
-`docker run -it chocolate run.py create_db --engine_string <MY_ENGINE_STRING>`
+`docker run -it chocolate run.py create_db --engine_string <MY ENGINE STRING>`
 
 #### Create database on RDS 
 Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
@@ -133,7 +133,7 @@ export MYSQL_USER = <RDS Username>
 export MYSQL_PASSWORD = <RDS Password>
 export MYSQL_PORT = 3306
 export MYSQL_DB = msia423_db
-export MYSQL_HOST = <YOUR HOST>
+export MYSQL_HOST = <MY HOST>
 ```
 
 Set up the environment variables
