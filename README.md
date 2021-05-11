@@ -110,13 +110,17 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 #### Uploading raw data to s3 
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload`
 
+By default, the command above will upload the original data from data/chocolate_data/chocolate.csv and then upload into the S3 bucket s3://2021-msia423-cai-hanyu/chocolate.csv.
+
 You can also specify the s3 path & local path using:
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload --local_path={local_file_path} --s3path={s3_file_path}`
 
 ### 3. Create MYSQL database
 
 #### Create database on local
+
 `docker run -it chocolate run.py create_db`
+If the local database is created by running Docker, it will remain in the writable layer unless a persistent storage drive is mounted. Assuming the current working directory is the root level of this repository:
 
 To specify the enginee string as environment variable, using 
 ```
