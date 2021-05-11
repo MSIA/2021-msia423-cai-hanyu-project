@@ -1,14 +1,15 @@
 import argparse
 import logging.config
-
-
-logging.config.fileConfig('config/logging/local.conf')
-logger = logging.getLogger('chocolate bars')
-
+import pkg_resources
 
 from src.more_chocolate_plz import ChocolateManager, create_db
 from src.s3 import upload_file_to_s3
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
+
+
+logging.config.fileConfig(pkg_resources.resource_filename(__name__, "config/logging/local.conf"),
+                          disable_existing_loggers=False)
+logger = logging.getLogger('chocolate bars')
 
 
 if __name__ == '__main__':
