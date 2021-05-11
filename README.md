@@ -121,11 +121,9 @@ You can also specify the s3 path & local path using:
 
 `docker run -it chocolate run.py create_db`
 
-To specify the enginee string as environment variable, using: 
-```
-export SQLALCHEMY_DATABASE_URI = <ENGINE_STRING>
-docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db 
-```
+To specify the enginee string, using: 
+
+`docker run -it chocolate run.py create_db --engine_string <MY_ENGINE_STRING>`
 
 #### Create database on RDS 
 Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
