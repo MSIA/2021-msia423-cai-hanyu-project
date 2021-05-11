@@ -57,21 +57,6 @@ def create_db(engine_string: str):
     logger.info("Database created.")
 
 
-def delete_db(engine_string: str):
-    """
-    Delete database from provided engine string.
-    
-    Args:
-        engine_string (str): Engine string
-
-    Returns: None
-    """
-    engine = sqlalchemy.create_engine(engine_string)
-
-    Base.metadata.drop_all(engine)
-    logger.info("Database deleted")
-
-
 class ChocolateManager:
 
     def __init__(self, app=None, engine_string=None):
