@@ -108,7 +108,10 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 **The raw data is located at  data/chocolate_data/chocolate.csv**
 
 #### Uploading raw data to s3 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate src/s3.py`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload`
+
+You can also specify the s3 path & local path using:
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload --local_path={local_file_path} --s3path={s3_file_path}`
 
 ### 3. Create MYSQL database
 
