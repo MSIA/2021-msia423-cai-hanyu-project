@@ -120,12 +120,11 @@ You can also specify the s3 path & local path using:
 #### Create database on local
 
 `docker run -it chocolate run.py create_db`
-If the local database is created by running Docker, it will remain in the writable layer unless a persistent storage drive is mounted. Assuming the current working directory is the root level of this repository:
 
-To specify the enginee string as environment variable, using 
+To specify the enginee string as environment variable, using: 
 ```
 export SQLALCHEMY_DATABASE_URI = <ENGINE_STRING>
-docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db
+docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db 
 ```
 
 #### Create database on RDS 
