@@ -108,18 +108,22 @@ export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 **The raw data is located at  data/chocolate_data/chocolate.csv**
 
 #### Uploading raw data to s3 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate src/s3.py`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload`
+
+By default, the command above will upload the original data from data/chocolate_data/chocolate.csv and then upload into the S3 bucket s3://2021-msia423-cai-hanyu/chocolate.csv.
+
+You can also specify the s3 path & local path using:
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload --local_path={local_file_path} --s3path={s3_file_path}`
 
 ### 3. Create MYSQL database
 
 #### Create database on local
+
 `docker run -it chocolate run.py create_db`
 
-To specify the enginee string as environment variable, using 
-```
-export SQLALCHEMY_DATABASE_URI = <ENGINE_STRING>
-docker run -it -e SQLALCHEMY_DATABASE_URI chocolate run.py create_db
-```
+To specify the enginee string, using: 
+
+`docker run -it chocolate run.py create_db --engine_string <MY ENGINE STRING>`
 
 #### Create database on RDS 
 Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
@@ -129,7 +133,7 @@ export MYSQL_USER = <RDS Username>
 export MYSQL_PASSWORD = <RDS Password>
 export MYSQL_PORT = 3306
 export MYSQL_DB = msia423_db
-export MYSQL_HOST = <YOUR HOST>
+export MYSQL_HOST = <MY HOST>
 ```
 
 Set up the environment variables
