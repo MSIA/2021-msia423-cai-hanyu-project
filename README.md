@@ -105,7 +105,7 @@ export AWS_ACCESS_KEY_ID = <AWS KEY ID>
 export AWS_SECRET_ACCESS_KEY = <AWS KEY>
 ```
 
-**The raw data is located at  data/chocolate_data/chocolate.csv**
+The raw data is located at  data/chocolate_data/chocolate.csv
 
 #### Uploading raw data to s3 
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload`
