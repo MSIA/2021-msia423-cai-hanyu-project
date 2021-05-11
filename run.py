@@ -7,6 +7,7 @@ logger = logging.getLogger('chocolate bars')
 
 
 from src.more_chocolate_plz import ChocolateManager, create_db
+from src.s3 import upload_file_to_s3
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
 
 
@@ -20,6 +21,12 @@ if __name__ == '__main__':
     sb_create = subparsers.add_parser("create_db", description="Create database")
     sb_create.add_argument("--engine_string", default=SQLALCHEMY_DATABASE_URI,
                            help="SQLAlchemy connection URI for database")
+
+    # Sub-parser for uploading data to s3
+    sb_upload = subparsers.add_parser("upload", help="Upload raw data to s3")
+    sb_upload.add_argument("--s3path", default='s3://2021-msia423-cai-hanyu/chocolate.csv', help="S3 data path")
+    sb_upload.add_argument('--local_path', default='data/chocolate_data/chocolate.csv', help="The local path")
+
 
     # Sub-parser for ingesting new data
     sb_ingest = subparsers.add_parser("ingest", description="Add data to database")
@@ -43,7 +50,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     sp_used = args.subparser_name
-    if sp_used == 'create_db':
+    if sp_used == 'upload':
+        upload_file_to_s3(args.local_path, args.s3path)
+    elif sp_used == 'create_db':
         create_db(args.engine_string)
     elif sp_used == 'ingest':
         tm = ChocolateManager(engine_string=args.engine_string)
