@@ -83,10 +83,10 @@ class ChocolateManager:
         """
         self.session.close()
 
-    def add_chocolate(self, ref: int, company: str, country_of_bean_origin: str, cocoa_percent: float,
-                      rating: float, counts_of_ingredients: int, beans: str, cocoa_butter: str, vanilla: str,
-                      lecithin: str, salt: str, sugar: str, sweetener_without_sugar: str, first_taste: str,
-                      second_taste: str, third_taste: str, fourth_taste: str):
+    def add_chocolate(self, ref, company, country_of_bean_origin, cocoa_percent,
+                      rating, counts_of_ingredients, beans, cocoa_butter, vanilla,
+                      lecithin, salt, sugar, sweetener_without_sugar, first_taste,
+                      second_taste, third_taste, fourth_taste):
 
         """
         Seeds an existing database with additional chocolate bars
