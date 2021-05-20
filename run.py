@@ -43,23 +43,23 @@ if __name__ == '__main__':
     sb_ingest.add_argument("--lecithin",help="if lecithin is in the chocolate bar added")
     sb_ingest.add_argument("--salt",help="if salt is in the chocolate bar added")
     sb_ingest.add_argument("--sugar",help="if sugar is in the chocolate bar added")
-    sb_ingest.add_argument("--sweetener_wirhout_sugar",help="if sweetener_wirhout_sugar is in the chocolate bar added")
+    sb_ingest.add_argument("--sweetener_without_sugar",help="if sweetener_wirhout_sugar is in the chocolate bar added")
     sb_ingest.add_argument("--first_taste",help="first taste of chocolate bar added")
     sb_ingest.add_argument("--second_taste",help="second taste of chocolate bar added")
     sb_ingest.add_argument("--third_taste",help="third taste of chocolate bar added")
     sb_ingest.add_argument("--fourth_taste",help="fourth taste of chocolate bar added")
 
     args = parser.parse_args()
-    sp_used = args.subparser_name
-    if sp_used == 'upload':
+    sb_used = args.subparser_name
+    if sb_used == 'upload':
         upload_file_to_s3(args.local_path, args.s3path)
-    elif sp_used == 'create_db':
+    elif sb_used == 'create_db':
         create_db(args.engine_string)
-    elif sp_used == 'ingest':
+    elif sb_used == 'ingest':
         tm = ChocolateManager(engine_string=args.engine_string)
         tm.add_chocolate(args.ref, args.company, args.country_of_bean_origin, args.cocoa_percent, args.rating,
                          args.counts_of_ingredients, args.beans, args.cocoa_butter, args.vanilla, args.lecithin,
-                         args.salt, args.sugar, args.sweetener_wirhout_sugar, args.first_taste, args.second_taste,
+                         args.salt, args.sugar, args.sweetener_without_sugar, args.first_taste, args.second_taste,
                          args.third_taste, args.fourth_taste)
         tm.close()
     else:

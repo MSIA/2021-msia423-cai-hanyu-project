@@ -83,7 +83,7 @@ class ChocolateManager:
         """
         self.session.close()
 
-    def add_chocolate(self, id: int, ref: int, company: str, country_of_bean_origin: str, cocoa_percent: float,
+    def add_chocolate(self, ref: int, company: str, country_of_bean_origin: str, cocoa_percent: float,
                       rating: float, counts_of_ingredients: int, beans: str, cocoa_butter: str, vanilla: str,
                       lecithin: str, salt: str, sugar: str, sweetener_without_sugar: str, first_taste: str,
                       second_taste: str, third_taste: str, fourth_taste: str):
@@ -92,7 +92,6 @@ class ChocolateManager:
         Seeds an existing database with additional chocolate bars
 
         Args:
-            id (int): The primary key for table chocolate
             ref (int): Reference number for chocolate bar added
             company (str): Company for chocolate bar added
             country_of_bean_origin (str): Country for the chocolate bean
@@ -105,7 +104,7 @@ class ChocolateManager:
             lecithin (str): if lecithin is in the chocolate bar
             salt (str): if salt is in the chocolate bar
             sugar (str): if sugar is in the chocolate bar
-            sweetener_without_sugar (str): if sweetener_wirhout_sugar is in the chocolate bar
+            sweetener_without_sugar (str): if sweetener_without_sugar is in the chocolate bar
             first_taste (str): first taste of chocolate bar added
             second_taste (str): second taste of chocolate bar added
             third_taste (str): third taste of chocolate bar added
