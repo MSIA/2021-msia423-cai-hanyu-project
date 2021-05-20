@@ -9,14 +9,14 @@ from config.flaskconfig import SQLALCHEMY_DATABASE_URI
 
 logging.config.fileConfig(pkg_resources.resource_filename(__name__, "config/logging/local.conf"),
                           disable_existing_loggers=False)
-logger = logging.getLogger('chocolate bars')
+logger = logging.getLogger("chocolate bars")
 
 
 if __name__ == '__main__':
 
     # Add parsers for both creating a database and adding chocolates to it
     parser = argparse.ArgumentParser(description="Create and/or add data to database")
-    subparsers = parser.add_subparsers(dest='subparser_name')
+    subparsers = parser.add_subparsers(dest="subparser_name")
 
     # Sub-parser for creating a database
     sb_create = subparsers.add_parser("create_db", description="Create database")
@@ -25,9 +25,8 @@ if __name__ == '__main__':
 
     # Sub-parser for uploading data to s3
     sb_upload = subparsers.add_parser("upload", help="Upload raw data to s3")
-    sb_upload.add_argument("--s3path", default='s3://2021-msia423-cai-hanyu/chocolate.csv', help="S3 data path")
-    sb_upload.add_argument('--local_path', default='data/chocolate_data/chocolate.csv', help="The local path")
-
+    sb_upload.add_argument("--s3path", default="s3://2021-msia423-cai-hanyu/chocolate.csv", help="S3 data path")
+    sb_upload.add_argument("--local_path", default="data/chocolate_data/chocolate.csv", help="The local path")
 
     # Sub-parser for ingesting new data
     sb_ingest = subparsers.add_parser("ingest", description="Add data to database")
@@ -51,11 +50,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     sb_used = args.subparser_name
-    if sb_used == 'upload':
+    if sb_used == "upload":
         upload_file_to_s3(args.local_path, args.s3path)
-    elif sb_used == 'create_db':
+    elif sb_used == "create_db":
         create_db(args.engine_string)
-    elif sb_used == 'ingest':
+    elif sb_used == "ingest":
         tm = ChocolateManager(engine_string=args.engine_string)
         tm.add_chocolate(args.ref, args.company, args.country_of_bean_origin, args.cocoa_percent, args.rating,
                          args.counts_of_ingredients, args.beans, args.cocoa_butter, args.vanilla, args.lecithin,

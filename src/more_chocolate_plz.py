@@ -2,7 +2,7 @@ import logging.config
 
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Float, Integer, String, MetaData
+from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
@@ -17,7 +17,7 @@ class Chocolates(Base):
     Create a data model for the database to load chocolate bars rating data
     """
 
-    __tablename__ = 'chocolates'
+    __tablename__ = "chocolates"
 
     id = Column(Integer, primary_key=True)
     ref = Column(Integer(), nullable=False)
@@ -39,7 +39,7 @@ class Chocolates(Base):
     fourth_taste = Column(String(25), unique=False, nullable=True)
 
     def __repr__(self):
-        return '<Chocolate Bar Ref Number %r>' % ref
+        return "<Chocolate Bar Ref Number %r>" % ref
 
 
 def create_db(engine_string: str):
