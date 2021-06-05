@@ -101,8 +101,8 @@ I can use A/B testing to examine the product rating if people choose chocolate b
 
 #### Add environment variables to access s3
 ```
-export AWS_ACCESS_KEY_ID = <AWS KEY ID>
-export AWS_SECRET_ACCESS_KEY = <AWS KEY>
+export AWS_ACCESS_KEY_ID="AWS KEY ID"
+export AWS_SECRET_ACCESS_KEY="AWS KEY"
 ```
 
 The raw data is located at  data/chocolate_data/chocolate.csv
@@ -131,11 +131,11 @@ To specify the enginee string, using:
 Specify the environment variables in .mysqlconfig file (use "vi. mysqlconfig" to open the file):
 
 ```
-export MYSQL_USER = <RDS Username>
-export MYSQL_PASSWORD = <RDS Password>
-export MYSQL_PORT = 3306
-export MYSQL_DB = msia423_db
-export MYSQL_HOST = <MY HOST>
+export MYSQL_USER="RDS Username"
+export MYSQL_PASSWORD="RDS Password"
+export MYSQL_PORT="3306"
+export MYSQL_DB="msia423_db"
+export MYSQL_HOST="MY HOST"
 ```
 
 Set up the environment variables
