@@ -2,7 +2,14 @@ import traceback
 import logging.config
 from flask import Flask
 from flask import render_template, request, redirect, url_for
+import yaml
 
+from flask_sqlalchemy import SQLAlchemy
+from src.more_chocolate_plz import Chocolates
+from src.clean_data import clean
+from src.modeling import get_userinput, generate_kmeans, predict_user_input
+
+# export FLASK_DEBUG=1
 # Initialize the Flask application
 app = Flask(__name__, template_folder="app/templates", static_folder="app/static")
 
@@ -15,46 +22,54 @@ logging.config.fileConfig(app.config["LOGGING_CONFIG"])
 logger = logging.getLogger(app.config["APP_NAME"])
 logger.debug('Web app log')
 
-# Initialize the database session
-from src.add_songs import Tracks, TrackManager
-track_manager = TrackManager(app)
+# Initialize the database
+db = SQLAlchemy(app)
+
+# Connect to RDS or local database and query all data
+#logger.info('Connecting to '+ app.config['SQLALCHEMY_DATABASE_URI'])
+#recs = db.session.query(Chocolates).all()
+
+BOOLS = ['Yes','No']
+
+#load config yaml
+with open('config/config.yaml', "r") as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        logger.info("Configuration file loaded from %s" % 'config/config.yaml')
 
 @app.route('/')
 def index():
-    """Main view that lists songs in the database.
-
-    Create view into index page that uses data queried from Track database and
-    inserts it into the msiapp/templates/index.html template.
-
+    """  Create view into index page that collects user input data
     Returns: rendered html template
-
     """
-
     try:
-        tracks = track_manager.session.query(Tracks).limit(app.config["MAX_ROWS_SHOW"]).all()
+        #applications = application_manager.session.query(Application).limit(app.config["MAX_ROWS_SHOW"]).all()
         logger.debug("Index page accessed")
-        return render_template('index.html', tracks=tracks)
+        return render_template('index.html',booleans = BOOLS)
     except:
         traceback.print_exc()
-        logger.warning("Not able to display tracks, error page returned")
+        logger.warning("Not able to display loan applications information, error page returned")
         return render_template('error.html')
 
 
-@app.route('/add', methods=['POST'])
-def add_entry():
-    """View that process a POST with new song input
-
-    :return: redirect to index page
-    """
-
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
     try:
-        track_manager.add_track(artist=request.form['artist'], album=request.form['album'], title=request.form['title'])
-        logger.info("New song added: %s by %s", request.form['title'], request.form['artist'])
-        return redirect(url_for('index'))
+        logger.debug("submmission page accessed")
+        #clean data
+        df = clean('data/chocolate_data/chocolate.csv', **config['clean_data']['clean'])
+        # user insert value
+        input_value = get_userinput(request.form["cocoa_percent"], request.form["rating"], request.form["beans"], request.form["cocoa_butter"], 
+                                request.form["vanilla"],request.form["lecithin"],request.form["salt"],request.form["sugar"],
+                                request.form["sweetener_without_sugar"], **config['modeling']['get_userinput'])
+        #get prediction result
+        recommendation = predict_user_input(df, input_value, **config['modeling']['predict_user_input'])
+        print(recommendation)
+        return render_template('submit.html',rec = recommendation.values)
     except:
-        logger.warning("Not able to display tracks, error page returned")
+        traceback.print_exc()
+        logger.warning("Not able to display loan applications information, error page returned")
         return render_template('error.html')
-
+    
 
 if __name__ == '__main__':
     app.run(debug=app.config["DEBUG"], port=app.config["PORT"], host=app.config["HOST"])

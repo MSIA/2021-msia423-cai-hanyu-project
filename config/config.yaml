@@ -1,0 +1,31 @@
+clean_data:
+  clean:
+    enc_features: ['beans','cocoa_butter', 'vanilla', 'lecithin', 'salt', 'sugar','sweetener_without_sugar']
+    old_index_col : 'Unnamed: 0'
+    index_col: 'index'
+    store_path: 'data/clean_data.csv'
+    clean_features: ['index','company','specific_bean_origin_or_bar_name','cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt', 
+    'sugar', 'sweetener_without_sugar', 'first_taste','second_taste']
+ 
+  standardization:
+    features: [ 'cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt', 'sugar', 'sweetener_without_sugar' ]
+
+modeling:
+  generate_kmeans:
+    features: [ 'cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt', 'sugar', 'sweetener_without_sugar' ]
+    n_cluster: 9
+    seed: 123
+    model_save_path: 'models/kmeans.joblib'
+
+  get_userinput:
+    input_cols: [ 'index', 'cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt', 'sugar', 'sweetener_without_sugar' ]
+    preset_index: '999999'
+    replace_dict: {'No': 0, 'Yes': 1}
+
+  predict_user_input:
+    web_display_vars : ['index','company','specific_bean_origin_or_bar_name','cocoa_percent', 'rating', 'first_taste','second_taste']
+    clean_vars: [ 'index','cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt','sugar','sweetener_without_sugar' ]
+    features: [ 'cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt', 'sugar', 'sweetener_without_sugar' ]
+    model_save_path: 'models/kmeans.joblib'
+    store_path: 'data/chocolate_data/recommend.csv'
+    top: 10
