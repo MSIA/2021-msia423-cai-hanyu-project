@@ -42,7 +42,6 @@ def index():
     Returns: rendered html template
     """
     try:
-        #applications = application_manager.session.query(Application).limit(app.config["MAX_ROWS_SHOW"]).all()
         logger.debug("Index page accessed")
         return render_template('index.html',booleans = app.config['BOOLS'])
     except:
@@ -53,18 +52,22 @@ def index():
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
+    """  The submission page that list out recommendation table for user
+    Returns: rendered html template
+    """
     try:
         logger.debug("submmission page accessed")
         # get data from rds 
         df = pd.read_sql(recs.statement, recs.session.bind)
         # user insert value
-        input_value = get_userinput(request.form["cocoa_percent"], request.form["rating"], request.form["beans"], request.form["cocoa_butter"], 
-                                request.form["vanilla"],request.form["lecithin"],request.form["salt"],request.form["sugar"],
-                                request.form["sweetener_without_sugar"], **config['modeling']['get_userinput'])
-        #get prediction result
+        input_value = get_userinput(request.form["cocoa_percent"], request.form["rating"], request.form["beans"],
+                                    request.form["cocoa_butter"], request.form["vanilla"],request.form["lecithin"],
+                                    request.form["salt"], request.form["sugar"],request.form["sweetener_without_sugar"],
+                                    **config['modeling']['get_userinput'])
+        # get prediction result
         recommendation = predict_user_input(df, input_value, **config['modeling']['predict_user_input'])
         print(recommendation)
-        return render_template('submit.html',rec = recommendation.values)
+        return render_template('submit.html', rec=recommendation.values)
     except:
         traceback.print_exc()
         logger.warning("Not able to display loan applications information, error page returned")

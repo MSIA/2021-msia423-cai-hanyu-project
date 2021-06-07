@@ -13,12 +13,10 @@
 <body style="margin:30px;">
 
    <right><a align="right">
-      <img src="{{ url_for('static', filename='bars.jpeg') }}" width="20%" height="20%">
+      <img src="{{ url_for('static', filename='tasty.jpeg') }}" width="50%" height="20%">
     </a></right>
 
-    <h3>
-         <a href = "{{ url_for('index') }}"> <p style="color:brown"> Chocolate Bar Recommender </p> </a>
-    </h3>
+    <h3><p style="color:brown"> Chocolate Bar Recommender </p> </h3>
 
     <form method="post" action="{{ url_for('submit') }}">
 
@@ -26,53 +24,53 @@
       <input type="number" id="cocoa_percent" min=0 max=100 step="0.01" name="cocoa_percent">
       <br>
       <br>
-   <h6 for="rating">2. How do you rate the chocolate bar from 1~5? </h6>
+   <h6 for="rating">2. How high do you want the rating to be for the chocolate bar recommended: (1~5) </h6>
    <input type="number" id="rating" min=1 max=5 step="0.01" name="rating">
       <br>
       <br>
-   <h6>3. Does the chocolate bar contain beans? </h6>
+   <h6>3. Does you ideal chocolate bar contain beans? </h6>
       {% for choice in booleans %}
    <input type="radio" value="{{ choice }}" id="beans" name="beans">
    <label for="{{ choice }}">{{ choice }}</label>
       {% endfor %}
       <br>
       <br>
-   <h6>4. Does the chocolate bar contain cocoa butter? </h6>
+   <h6>4. Does you ideal chocolate bar contain cocoa butter? </h6>
       {% for choice in booleans %}
    <input type="radio" id="cocoa_butter" value="{{ choice }}" name="cocoa_butter">
    <label for="{{ choice }}">{{ choice }}</label>
       {% endfor %}
       <br>
       <br>
-   <h6>5. Does the chocolate bar contain vanilla? </h6>
+   <h6>5. Does you ideal chocolate bar contain vanilla? </h6>
       {% for choice in booleans %}
    <input type="radio" id="vanilla" value="{{ choice }}" name="vanilla">
    <label for="{{ choice}}">{{ choice }}</label>
       {% endfor %}
       <br>
       <br>
-   <h6>6. Does the chocolate bar contain lecithin? </h6>
+   <h6>6. Does you ideal chocolate bar contain lecithin? </h6>
       {% for choice in booleans %}
    <input type="radio" id="lecithin" value="{{ choice }}" name="lecithin">
    <label for="{{ choice }}">{{ choice }}</label>
       {% endfor %}
       <br>
       <br>
-   <h6>7. Does the chocolate bar contain salt? </h6>
+   <h6>7. Does you ideal chocolate bar contain salt? </h6>
       {% for choice in booleans %}
    <input type="radio" id="salt" value="{{ choice }}" name="salt">
    <label for="{{ choice }}">{{ choice }}</label>
       {% endfor %}
       <br>
       <br>
-   <h6>8. Does the chocolate bar contain sugar? </h6>
+   <h6>8. Does you ideal chocolate bar contain sugar? </h6>
       {% for choice in booleans %}
    <input type="radio" id="sugar" value="{{ choice }}" name="sugar">
    <label for="{{ choice }}">{{ choice }}</label>
       {% endfor %}
       <br>
       <br>
-   <h6>9. Does the chocolate bar contain sweetener without sugar </h6>
+   <h6>9. Does you ideal chocolate bar contain sweetener without sugar </h6>
       {% for choice in booleans %}
    <input type="radio" id="sweetener_without_sugar" value="{{ choice }}" name="sweetener_without_sugar">
    <label for="{{ choice }}">{{ choice }}</label>

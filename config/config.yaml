@@ -13,7 +13,7 @@ clean_data:
 modeling:
   generate_kmeans:
     features: [ 'cocoa_percent', 'rating', 'beans', 'cocoa_butter', 'vanilla', 'lecithin', 'salt', 'sugar', 'sweetener_without_sugar' ]
-    n_cluster: 9
+    n_cluster: 11
     seed: 123
     model_save_path: 'models/kmeans.joblib'
 

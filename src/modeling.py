@@ -44,7 +44,7 @@ def generate_kmeans(df, features, n_cluster, seed, model_save_path):
 	
 def predict_user_input(data, user_input, model_save_path, store_path, features, top, clean_vars, web_display_vars,
 					   	cluster_labels='cluster_label', bar_index='index', preset_index='999999'):
-	"""Initialize the k-means clustering model
+	"""Cluster the user input product information and format the prediction result
 
 	Args:
 		data (:obj:`DataFrame <pandas.DataFrame>`): the records of chocolate bars
@@ -85,8 +85,9 @@ def predict_user_input(data, user_input, model_save_path, store_path, features, 
 	return result
 
 
-def get_userinput(cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, sugar, sweetener_without_sugar, input_cols, preset_index, replace_dict):
-	"""
+def get_userinput(cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, sugar, sweetener_without_sugar,
+				  input_cols, preset_index, replace_dict):
+	"""Formatting user input data from flask app
 
 	Args:
 		cocoa (float): the percentage of cocoa for chocolate bar
@@ -98,9 +99,12 @@ def get_userinput(cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, s
 		salt (str): whether the chocolate bar contains salt
 		sugar (str): whether the chocolate bar contains sugar
 		sweetener_without_sugar (str): sweetener_without_sugar
+		input_cols (:obj:`list`): the list of features in user input
+		preset_index (str): the preset index for user input product
+		replace_dict (:obj:`dictionary`): the dictionary that map 'yes' and 'no' into 1 and 0
 
 	Returns:
-		model (:obj:`joblib`): the k means clustering model
+		input_value (:obj:`DataFrame <pandas.DataFrame>`): the well-formatted dataframe that contains user input
 	"""
 	input_value = pd.DataFrame([[preset_index, cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, sugar,
 								 sweetener_without_sugar]], columns=input_cols)
@@ -112,7 +116,27 @@ def get_userinput(cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, s
 def formatting_preds(preds, raw_df, features, top, store_path, choco_index='index', user_input_index='999999',
 						cluster_labels='cluster_label', rec_product_name='chocolate_bar', rank_name='rank',
 						join_method='inner', drop_idx1='index_x', drop_idx2='index_y'):
+	"""Formatting prediction dataframe, calculate the relative distance matrix, and generate a
+	recommendation table with top 10 recommended products
 
+	Args:
+		preds (:obj:`DataFrame <pandas.DataFrame>`): the dataframe that contain cluster label
+		raw_df (:obj:`DataFrame <pandas.DataFrame>`): the raw dataframe that contain raw features
+		features (:obj:`list`): the list of features in preds dataframe
+		top (int): the top n products to be recommended
+		store_path (str): the path that store recommendation table
+		choco_index (str): the index column name
+		user_input_index (str): the value for user input in the index column
+		cluster_labels (str): the column name for cluster label
+		rec_product_name (str): the name of product to be recommended
+		rank_name (str): the rank of products to be recommended
+		join_method (str): the join method for merging prediction dataframe with raw dataframe
+		drop_idx1 (str): the 1st index column to be dropped after merging
+		drop_idx2 (str): the 2nd index column to be dropped after merging
+
+	Returns:
+		rec_result (:obj:`DataFrame <pandas.DataFrame>`): the recommendation table
+	"""
 	# get distance matrix
 	input_cluster = int(preds[preds[choco_index] == user_input_index][cluster_labels])
 	clusters = preds[preds[cluster_labels] == input_cluster].reset_index(drop=True)
@@ -145,6 +169,7 @@ def mapping(melts, rec_product_name, raw_df, choco_index, join_method, drop_idx1
 
 
 def melting_dataset(df_recs, choco_idx, rank_name, rec_product_name):
+	""" melting dataframe and ranking products in dataframe"""
 	df_melted = df_recs.melt(id_vars=[choco_idx], var_name=rank_name, value_name=rec_product_name).drop_duplicates()
 	df_melted[rank_name] = [int(x.replace('chocolate', '')) for x in df_melted[rank_name]]
 	return df_melted
