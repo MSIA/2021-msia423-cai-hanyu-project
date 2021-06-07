@@ -8,6 +8,9 @@ HOST = "0.0.0.0"
 SQLALCHEMY_ECHO = False  # If true, SQL for queries made will be printed
 MAX_ROWS_SHOW = 100
 
+#boolean list 
+BOOLS = ['Yes','No']
+
 # Connection string
 DB_HOST = os.environ.get("MYSQL_HOST")
 DB_PORT = os.environ.get("MYSQL_PORT")

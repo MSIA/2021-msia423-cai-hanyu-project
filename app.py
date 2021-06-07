@@ -4,6 +4,7 @@ from flask import Flask
 from flask import render_template, request, redirect, url_for
 import yaml
 
+import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from src.more_chocolate_plz import Chocolates
 from src.clean_data import clean
@@ -26,10 +27,9 @@ logger.debug('Web app log')
 db = SQLAlchemy(app)
 
 # Connect to RDS or local database and query all data
-#logger.info('Connecting to '+ app.config['SQLALCHEMY_DATABASE_URI'])
-#recs = db.session.query(Chocolates).all()
+logger.info('Connecting to '+ app.config['SQLALCHEMY_DATABASE_URI'])
+recs = db.session.query(Chocolates)
 
-BOOLS = ['Yes','No']
 
 #load config yaml
 with open('config/config.yaml', "r") as f:
@@ -44,7 +44,7 @@ def index():
     try:
         #applications = application_manager.session.query(Application).limit(app.config["MAX_ROWS_SHOW"]).all()
         logger.debug("Index page accessed")
-        return render_template('index.html',booleans = BOOLS)
+        return render_template('index.html',booleans = app.config['BOOLS'])
     except:
         traceback.print_exc()
         logger.warning("Not able to display loan applications information, error page returned")
@@ -55,8 +55,8 @@ def index():
 def submit():
     try:
         logger.debug("submmission page accessed")
-        #clean data
-        df = clean('data/chocolate_data/chocolate.csv', **config['clean_data']['clean'])
+        # get data from rds 
+        df = pd.read_sql(recs.statement, recs.session.bind)
         # user insert value
         input_value = get_userinput(request.form["cocoa_percent"], request.form["rating"], request.form["beans"], request.form["cocoa_butter"], 
                                 request.form["vanilla"],request.form["lecithin"],request.form["salt"],request.form["sugar"],
@@ -72,4 +72,6 @@ def submit():
     
 
 if __name__ == '__main__':
+    logger.debug(app.config["HOST"])
+    logger.debug(app.config["PORT"])
     app.run(debug=app.config["DEBUG"], port=app.config["PORT"], host=app.config["HOST"])

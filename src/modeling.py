@@ -13,35 +13,67 @@ from joblib import dump, load
 logger = logging.getLogger(__name__)
 
 
-def generate_kmeans(df, features, n_cluster, seed, model_save_path, cluster_labels='cluster_label'):
-	
+def generate_kmeans(df, features, n_cluster, seed, model_save_path):
+	"""Initialize the k-means clustering model
+
+	Args:
+		df (:obj:`DataFrame <pandas.DataFrame>`): the data used for generate k means clustering
+		features (:obj:`list`): list of features
+		n_cluster (int): number of clusters
+		seed (int): the random state
+		model_save_path (str): the path to save k means model
+
+	Returns:
+		model (:obj:`joblib`): the k means clustering model
+	"""
 	scale_df = standardization(df, features)
 	model = KMeans(n_clusters=n_cluster, random_state=seed).fit(scale_df[features])
 
 	# model evaluation
 	si = silhouette_score(scale_df[features], model.labels_)
-	logger.info('The model has silhouette score %f' % si)
+	if si >= 0.4:
+		logger.info('The model has silhouette score %f' % si)
+	else:
+		logger.warning('The model has silhouette score %f , and the model may not distinguish different products well' % si)
 
-	#save model to joblib
+	# save model to joblib
 	dump(model, model_save_path) 
 
 	return model
 	
 	
-def predict_user_input(data, user_input, model_save_path, store_path, features, top, clean_vars, web_display_vars, cluster_labels='cluster_label',bar_index='index',preset_index='999999'):
+def predict_user_input(data, user_input, model_save_path, store_path, features, top, clean_vars, web_display_vars,
+					   	cluster_labels='cluster_label', bar_index='index', preset_index='999999'):
+	"""Initialize the k-means clustering model
 
+	Args:
+		data (:obj:`DataFrame <pandas.DataFrame>`): the records of chocolate bars
+		user_input (:obj:`DataFrame <pandas.DataFrame>`): one row dataframe that contains user input
+		model_save_path (str): path for the model joblib file
+		store_path (str): the path to store the recommendation table
+		features (:obj:`list`): the list of features for recommendation generation
+		top (int) : choose the top n products for recommendation
+		clean_vars (:obj:`list`): the list of features stored in cleaned data
+		web_display_vars (:obj:`list`): the list of features used for display on webpage
+		cluster_labels (str): the column name for storing cluster label
+		bar_index (str): the column name for chocolate bar index
+		preset_index (str): the preset index for user input chocolate bar information
+
+	Returns:
+		result (:obj:`DataFrame <pandas.DataFrame>`): the recommendation table
+	"""
 	df = data[clean_vars]
 	df_web_display = data[web_display_vars]
 	scale_df = standardization(df, features)
 	model = load(model_save_path)
 
-	# scale and concate user input data
+	# scale and concat user input data
 	scale_user_array = get_standard_scalar(df, features).transform(user_input[features])
 	scale_user= user_input.copy(deep=True)
 	scale_user[features] = scale_user_array
 
-	# concate data with new user input
-	df = pd.concat([df,user_input])
+	# concat data with new user input
+	df = pd.concat([df, user_input])
 	scale_df = pd.concat([scale_user, scale_df])
 
 	# prediction
@@ -54,7 +86,22 @@ def predict_user_input(data, user_input, model_save_path, store_path, features, 
 
 
 def get_userinput(cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, sugar, sweetener_without_sugar, input_cols, preset_index, replace_dict):
-	
+	"""
+
+	Args:
+		cocoa (float): the percentage of cocoa for chocolate bar
+		rating (float): the rating given by the user
+		beans (str): whether the chocolate bar contains beans
+		cocoa_butter (str): whether the chocolate bar contains cocoa butter
+		vanilla (str): whether the chocolate bar contains vanilla
+		lecithin (str): whether the chocolate bar contains lecithin
+		salt (str): whether the chocolate bar contains salt
+		sugar (str): whether the chocolate bar contains sugar
+		sweetener_without_sugar (str): sweetener_without_sugar
+
+	Returns:
+		model (:obj:`joblib`): the k means clustering model
+	"""
 	input_value = pd.DataFrame([[preset_index, cocoa, rating, beans, cocoa_butter, vanilla, lecithin, salt, sugar,
 								 sweetener_without_sugar]], columns=input_cols)
 	input_value = input_value.replace(replace_dict)

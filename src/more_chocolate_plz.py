@@ -47,7 +47,8 @@ def create_db(engine_string):
     Args:
         engine_string (str): Engine string
 
-    Returns: None
+    Returns: 
+        None
     """
     engine = sqlalchemy.create_engine(engine_string)
 
@@ -58,9 +59,11 @@ def create_db(engine_string):
 
 def add_rows(file_path, session):
     """Add rows of chocolate bar records into the RDS database
+
     Args:
-        file_path: local recommendation table to be written into database
-        session: get session from SQLAlchemy connection string
+        file_path (str): local recommendation table to be written into database
+        session (str): get session from SQLAlchemy connection string
+
     Returns:
         None
     """
@@ -86,14 +89,16 @@ def add_rows(file_path, session):
         session.add(each_row)
 
     session.commit()
-    logger.info("Session commit complete")
+    logger.debug("Session commit complete")
 
 
 def upload_to_rds(file_path, engine_string):
     """ Create database in RDS for the chocolate bar table 
+
     Args:
         file_path (str): input file path
-        engine_string : enginee string for the RDS database
+        engine_string (str): engine string for the RDS database
+        
     Returns:
         None
     """
