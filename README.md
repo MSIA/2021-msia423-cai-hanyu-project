@@ -119,11 +119,11 @@ You can also specify the s3 path & local path using:
 
 #### Create database on local
 
-`docker run -it chocolate run.py create_db`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -it chocolate run.py create_db`
 
 To specify the enginee string, using: 
 
-`docker run -it chocolate run.py create_db --engine_string <MY ENGINE STRING>`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -it chocolate run.py create_db --engine_string <MY ENGINE STRING>`
 
 (Note: you may also specify enginee sting by setting environment variable SQLALCHEMY_DATABASE_URI)
  
@@ -144,19 +144,19 @@ Set up the environment variables
 
 Run the following command to initiate database with name "msia423_db" & create table named "chocolates" on RDS
 
-`docker run -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py create_db`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py create_db`
 
 ### 4.Run Model
-`docker run -it chocolate run.py csv_modeling`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -it chocolate run.py csv_modeling`
 
 ### 5.Upload the chocolate bar records to RDS database for recommendation
-`docker run -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds`
 
 Check for RDS database and operate using MYSQL commmands:
 `docker run -it --rm mysql:5.7.33 mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD}`
 
 ### 6.Launch the Web Application
-`docker run -it chocolate app.py`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -it chocolate app.py`
 
 ### 4. Test s3.py 
 Run the following command to test in docker container chocolate:
