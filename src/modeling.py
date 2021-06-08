@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, pairwise_distances
 
-from src.clean_data import standardization,get_standard_scalar
+from src.clean_data import standardization, get_standard_scalar
 
 from joblib import dump, load
 
@@ -29,19 +29,26 @@ def generate_kmeans(df, features, n_cluster, seed, model_save_path):
 	scale_df = standardization(df, features)
 	model = KMeans(n_clusters=n_cluster, random_state=seed).fit(scale_df[features])
 
-	# model evaluation
-	si = silhouette_score(scale_df[features], model.labels_)
+	# save model to joblib
+	dump(model, model_save_path)
+
+	return model
+
+
+def model_evaluation(data, model, features, metric_save_path):
+	"""
+
+	"""
+	si = silhouette_score(data[features], model.labels_)
 	if si >= 0.4:
 		logger.info('The model has silhouette score %f' % si)
 	else:
-		logger.warning('The model has silhouette score %f , and the model may not distinguish different products well' % si)
+		logger.warning('The model has silhouette score %f  and may not distinguish different products well' % si)
 
-	# save model to joblib
-	dump(model, model_save_path) 
+	# save performance metric
+	pd.DataFrame({'silhouette score:': [si]}).to_csv(metric_save_path)
 
-	return model
-	
-	
+
 def predict_user_input(data, user_input, model_save_path, store_path, features, top, clean_vars, web_display_vars,
 					   	cluster_labels='cluster_label', bar_index='index', preset_index='999999'):
 	"""Cluster the user input product information and format the prediction result

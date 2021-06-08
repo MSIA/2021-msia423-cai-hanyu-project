@@ -29,7 +29,7 @@ def clean(local_path, enc_features, old_index_col, index_col, store_path, clean_
 
 	df = df.rename(columns={old_index_col: index_col})
 
-	# convert cols to binary
+	# convert binary cols to 1 or 0
 	for var in enc_features:
 		df[var] = [np.where("not" in x, 0, 1) for x in df[var]]
 

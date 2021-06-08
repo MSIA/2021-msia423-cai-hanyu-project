@@ -20,8 +20,8 @@ class Chocolates(Base):
     """
 
     __tablename__ = "chocolates"
-
-    index = Column(Integer,  primary_key = True)
+    chocolate_key = Column(Integer, primary_key=True)
+    index = Column(Integer, unique=False, nullable=False)
     company = Column(String(25), unique=False, nullable=False)
     specific_bean_origin_or_bar_name = Column(String(50), unique=False, nullable=False)
     cocoa_percent = Column(Float(), unique=False, nullable=False)

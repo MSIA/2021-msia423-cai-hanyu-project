@@ -66,7 +66,6 @@ def submit():
                                     **config['modeling']['get_userinput'])
         # get prediction result
         recommendation = predict_user_input(df, input_value, **config['modeling']['predict_user_input'])
-        print(recommendation)
         return render_template('submit.html', rec=recommendation.values)
     except:
         traceback.print_exc()
