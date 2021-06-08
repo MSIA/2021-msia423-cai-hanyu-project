@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+</head>
+
+<body style="margin:30px;">
+    <h3>Chocolate Bar Recommender </h3>
+    <h4> <p style="color:lightblue"> Top 10 Chocolate Bars Recommendation For User: </p> </h4>
+
+
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+      <table>
+        <tr>
+          <th> <p style="padding:0 15px 0 15px; color:brown"> Rank </p> </th>
+          <th> <p style="padding:0 15px 0 15px; color:brown"> Chocolate Company </p> </th> 
+          <th> <p style="padding:0 15px 0 15px; color:brown"> Bean Name </p> </th> 
+          <th> <p style="padding:0 15px 0 15px; color:brown"> % of Cocoa </p> </th>
+          <th> <p style="padding:0 15px 0 15px; color:brown"> Rating</p> </th>
+          <th> <p style="padding:0 15px 0 15px; color:brown"> First Taste</p> </th>
+          <th> <p style="padding:0 15px 0 15px; color:brown"> Second Taste</p> </th>
+        </tr>
+        {% for r in rec %}
+        <tr>
+          <td style="padding:0 15px 0 15px;" >{{ r[0] }}</td>
+          <td style="padding:0 15px 0 15px;" >{{ r[2] }}</td> 
+          <td style="padding:0 15px 0 15px;">{{ r[3] }}</td>
+          <td style="padding:0 15px 0 15px;">{{ r[4] }}</td>
+          <td style="padding:0 15px 0 15px;">{{ r[5] }}</td>
+          <td style="padding:0 15px 0 15px;">{{ r[6] }}</td>
+          <td style="padding:0 15px 0 15px;">{{ r[7] }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+
+</body>
+</html>

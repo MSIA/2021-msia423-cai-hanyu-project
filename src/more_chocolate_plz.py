@@ -1,11 +1,12 @@
 import logging.config
+import os
 
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
-
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -13,19 +14,18 @@ Base = declarative_base()
 
 
 class Chocolates(Base):
+
     """
     Create a data model for the database to load chocolate bars rating data
     """
 
     __tablename__ = "chocolates"
-
-    id = Column(Integer, primary_key=True)
-    ref = Column(Integer(), nullable=False)
-    company = Column(String(100), unique=False, nullable=False)
-    country_of_bean_origin = Column(String(25), unique=False, nullable=False)
-    cocoa_percent = Column(Float(), nullable=False)
-    rating = Column(Float(), nullable=False)
-    counts_of_ingredients = Column(Integer(), nullable=False)
+    chocolate_key = Column(Integer, primary_key=True)
+    index = Column(Integer, unique=False, nullable=False)
+    company = Column(String(25), unique=False, nullable=False)
+    specific_bean_origin_or_bar_name = Column(String(50), unique=False, nullable=False)
+    cocoa_percent = Column(Float(), unique=False, nullable=False)
+    rating = Column(Float(), unique=False, nullable=False)
     beans = Column(String(25), unique=False, nullable=False)
     cocoa_butter = Column(String(25), unique=False, nullable=False)
     vanilla = Column(String(25), unique=False, nullable=False)
@@ -34,91 +34,88 @@ class Chocolates(Base):
     sugar = Column(String(25), unique=False, nullable=False)
     sweetener_without_sugar = Column(String(25), unique=False, nullable=False)
     first_taste = Column(String(25), unique=False, nullable=False)
-    second_taste = Column(String(25), unique=False, nullable=True)
-    third_taste = Column(String(25), unique=False, nullable=True)
-    fourth_taste = Column(String(25), unique=False, nullable=True)
+    second_taste = Column(String(25), unique=False, nullable=False)
 
     def __repr__(self):
-        return "<Chocolate Bar Ref Number %r>" % ref
+        return "<Chocolate Bar No. %i>" % self.index
 
 
-def create_db(engine_string: str):
+def create_db(engine_string):
     """
     Create database from provided engine string
 
     Args:
         engine_string (str): Engine string
 
-    Returns: None
+    Returns: 
+        None
     """
     engine = sqlalchemy.create_engine(engine_string)
 
     Base.metadata.create_all(engine)
+    logger.info(engine)
     logger.info("Database created.")
 
 
-class ChocolateManager:
+def add_rows(file_path, session):
+    """Add rows of chocolate bar records into the RDS database
 
-    def __init__(self, app=None, engine_string=None):
-        """
-        Args:
-            app (str): Flask - Flask app
-            engine_string (str): Engine string
-        """
-        if app:
-            self.db = SQLAlchemy(app)
-            self.session = self.db.session
-        elif engine_string:
-            engine = sqlalchemy.create_engine(engine_string)
-            Session = sessionmaker(bind=engine)
-            self.session = Session()
-        else:
-            raise ValueError("Need either an engine string or a Flask app to initialize")
+    Args:
+        file_path (str): local recommendation table to be written into database
+        session (str): get session from SQLAlchemy connection string
 
-    def close(self):
-        """
-        Closes session
+    Returns:
+        None
+    """
 
-        Returns: None
-        """
-        self.session.close()
+    df = pd.read_csv(file_path)
 
-    def add_chocolate(self, ref, company, country_of_bean_origin, cocoa_percent,
-                      rating, counts_of_ingredients, beans, cocoa_butter, vanilla,
-                      lecithin, salt, sugar, sweetener_without_sugar, first_taste,
-                      second_taste, third_taste, fourth_taste):
+    for i in range(len(df)):
+        each_row = Chocolates(index=int(df['index'][i]),
+                             company=str(df['company'][i]),
+                             specific_bean_origin_or_bar_name=str(df['specific_bean_origin_or_bar_name'][i]),
+                             cocoa_percent=float(df['cocoa_percent'][i]),
+                             rating=float(df['rating'][i]),
+                             beans=int(df['beans'][i]),
+                             cocoa_butter=int(df['cocoa_butter'][i]),
+                             vanilla=int(df['vanilla'][i]),
+                             lecithin=int(df['lecithin'][i]),
+                             salt=int(df['salt'][i]),
+                             sugar=int(df['sugar'][i]),
+                             sweetener_without_sugar=int(df['sweetener_without_sugar'][i]),
+                             first_taste = str(df['first_taste'][i]),
+                             second_taste=str(df['second_taste'][i]))
 
-        """
-        Seeds an existing database with additional chocolate bars
+        session.add(each_row)
 
-        Args:
-            ref (int): Reference number for chocolate bar added
-            company (str): Company for chocolate bar added
-            country_of_bean_origin (str): Country for the chocolate bean
-            cocoa_percent (float): Cocoa percentage for chocolate bar added
-            rating (float): Rating for chocolate bar added
-            counts_of_ingredients (int): Counts of ingredients for chocolate bar added
-            beans (str): Bean type for chocolate bar added
-            cocoa_butter (str): if cocoa butter is in the chocolate bar
-            vanilla (str): if vanilla is in the chocolate bar
-            lecithin (str): if lecithin is in the chocolate bar
-            salt (str): if salt is in the chocolate bar
-            sugar (str): if sugar is in the chocolate bar
-            sweetener_without_sugar (str): if sweetener_without_sugar is in the chocolate bar
-            first_taste (str): first taste of chocolate bar added
-            second_taste (str): second taste of chocolate bar added
-            third_taste (str): third taste of chocolate bar added
-            fourth_taste (str): fourth taste of chocolate bar added
+    session.commit()
+    logger.debug("Session commit complete")
 
-        Returns:None
-        """
 
-        session = self.session
-        bar = Chocolates(id=id, ref=ref, company=company, country_of_bean_origin=country_of_bean_origin,
-                         cocoa_percent=cocoa_percent, rating=rating, counts_of_ingredients=counts_of_ingredients,
-                         beans=beans, cocoa_butter=cocoa_butter, vanilla=vanilla, lecithin=lecithin, salt=salt,
-                         sugar=sugar, sweetener_without_sugar=sweetener_without_sugar, first_taste=first_taste,
-                         second_taste=second_taste, third_taste=third_taste, fourth_taste=fourth_taste)
-        session.add(bar)
-        session.commit()
-        logger.info("chocolate bar ref number %s from company %s added to database", ref, company)
+def upload_to_rds(file_path, engine_string):
+    """ Create database in RDS for the chocolate bar table 
+
+    Args:
+        file_path (str): input file path
+        engine_string (str): engine string for the RDS database
+        
+    Returns:
+        None
+    """
+
+    # generate engine string
+    engine_string = sqlalchemy.create_engine(engine_string)
+    logger.info(engine_string)
+
+    Session = sessionmaker(bind=engine_string)
+    session = Session()
+
+    # write records into table
+    try:
+        # write records into table
+        add_rows(file_path, session)
+        logger.info("Database created successfully with all records added")
+    except Exception as e:
+        logger.error(e)
+    finally:
+        session.close()

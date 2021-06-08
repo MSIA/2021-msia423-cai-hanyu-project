@@ -2,15 +2,17 @@ import argparse
 import logging.config
 import pkg_resources
 
-from src.more_chocolate_plz import ChocolateManager, create_db
-from src.s3 import upload_file_to_s3
-from config.flaskconfig import SQLALCHEMY_DATABASE_URI
+import yaml
 
+from src.more_chocolate_plz import create_db, upload_to_rds
+from src.s3 import upload_file_to_s3, download_file_from_s3
+from config.flaskconfig import SQLALCHEMY_DATABASE_URI
+from src.clean_data import clean, standardization
+from src.modeling import generate_kmeans, model_evaluation
 
 logging.config.fileConfig(pkg_resources.resource_filename(__name__, "config/logging/local.conf"),
                           disable_existing_loggers=False)
 logger = logging.getLogger("chocolate bars")
-
 
 if __name__ == '__main__':
 
@@ -25,44 +27,54 @@ if __name__ == '__main__':
 
     # Sub-parser for uploading data to s3
     sb_upload = subparsers.add_parser("upload", help="Upload raw data to s3")
-    sb_upload.add_argument("--s3path", default="s3://2021-msia423-cai-hanyu/chocolate.csv", help="S3 data path")
-    sb_upload.add_argument("--local_path", default="data/chocolate_data/chocolate.csv", help="The local path")
+    sb_upload.add_argument("--s3path", default=None, help="S3 data path")
+    sb_upload.add_argument("--local_path", default=None, help="The local path")
 
-    # Sub-parser for ingesting new data
-    sb_ingest = subparsers.add_parser("ingest", description="Add data to database")
-    sb_ingest.add_argument("--ref", help="Reference number for chocolate bar added")
-    sb_ingest.add_argument("--company", help="company for chocolate bar added")
-    sb_ingest.add_argument("--country_of_bean_origin", help="country for the chocolate bean of the chocolate bar added")
-    sb_ingest.add_argument("--cocoa_percent", help="cocoa percentage for chocolate bar added")
-    sb_ingest.add_argument("--rating", help="rating for chocolate bar added")
-    sb_ingest.add_argument("--counts_of_ingredients", help="counts of ingredients for chocolate bar added")
-    sb_ingest.add_argument("--beans", help="beans for chocolate bar added")
-    sb_ingest.add_argument("--cocoa_butter", help="if cocoa butter is in the chocolate bar added")
-    sb_ingest.add_argument("--vanilla", help="if vanilla is in the chocolate bar added")
-    sb_ingest.add_argument("--lecithin", help="if lecithin is in the chocolate bar added")
-    sb_ingest.add_argument("--salt", help="if salt is in the chocolate bar added")
-    sb_ingest.add_argument("--sugar", help="if sugar is in the chocolate bar added")
-    sb_ingest.add_argument("--sweetener_without_sugar", help="if sweetener_wirhout_sugar is in the chocolate bar added")
-    sb_ingest.add_argument("--first_taste", help="first taste of chocolate bar added")
-    sb_ingest.add_argument("--second_taste", help="second taste of chocolate bar added")
-    sb_ingest.add_argument("--third_taste", help="third taste of chocolate bar added")
-    sb_ingest.add_argument("--fourth_taste", help="fourth taste of chocolate bar added")
+    # Sub-parser for downloading data to s3
+    sb_download = subparsers.add_parser("download", help="Download raw data to s3")
+    sb_download.add_argument("--s3path", default=None, help="S3 data path")
+    sb_download.add_argument("--local_path", default=None, help="The local path")
+
+    # Sub-parser for modeling from csv
+    sb_run_modeling = subparsers.add_parser("run_modeling", help="Modeling and output recommendations to user")
+    sb_run_modeling.add_argument("--local_path", default=None, help="The local path")
+    sb_run_modeling.add_argument('--config', default=None, help='Path to configuration file')
+
+    # Store generated recommendations into RDS
+    sb_rds = subparsers.add_parser("store_rds", help="store cleaned table into RDS database")
+    sb_rds.add_argument('--file_path', default=None, help='path of clean data')
+    sb_rds.add_argument("--engine_string", default=SQLALCHEMY_DATABASE_URI,
+                           help="SQLAlchemy connection URI for database")
 
     args = parser.parse_args()
     sb_used = args.subparser_name
+
+    if  sb_used == "run_modeling":
+        # Load configuration file for parameters and tmo path
+        with open(args.config, "r") as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+            logger.info("Configuration file loaded from %s" % args.config)
+
     if sb_used == "upload":
         upload_file_to_s3(args.local_path, args.s3path)
+    elif sb_used == "download":
+        download_file_from_s3(args.local_path, args.s3path)
     elif sb_used == "create_db":
         create_db(args.engine_string)
-    elif sb_used == "ingest":
-        tm = ChocolateManager(engine_string=args.engine_string)
-        tm.add_chocolate(args.ref, args.company, args.country_of_bean_origin, args.cocoa_percent, args.rating,
-                         args.counts_of_ingredients, args.beans, args.cocoa_butter, args.vanilla, args.lecithin,
-                         args.salt, args.sugar, args.sweetener_without_sugar, args.first_taste, args.second_taste,
-                         args.third_taste, args.fourth_taste)
-        tm.close()
+    elif sb_used == "run_modeling":
+        # clean data
+        df = clean(args.local_path, **config['clean_data']['clean'])
+        # standardization
+        scale_df = standardization(df, **config['clean_data']['standardization'])
+        # generate k means model and save to joblib
+        model = generate_kmeans(scale_df, **config['modeling']['generate_kmeans'])
+        # model evaluation
+        model_evaluation(scale_df, model, **config['modeling']['model_evaluation'])
+    elif sb_used == "store_rds":
+        upload_to_rds(args.file_path, args.engine_string)
     else:
         parser.print_help()
+
 
 
 
