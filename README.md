@@ -95,7 +95,7 @@ After the application is launched, I would measure the number of clicks to my we
 
 ### 1. Build docker image 
 
-`docker build -f app/Dockerfile -t chocolate .`
+`docker build -f Dockerfile -t chocolate .`
 
 ### 2. Upload data to S3 bucket
 
@@ -108,12 +108,10 @@ export AWS_SECRET_ACCESS_KEY="AWS KEY"
 The raw data is located at  data/chocolate_data/chocolate.csv
 
 #### Uploading raw data to s3 
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload`
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload --s3path s3://2021-msia423-cai-hanyu/chocolate.csv --local_path data/chocolate_data/chocolate.csv`
 
-By default, the command above will upload the original data from data/chocolate_data/chocolate.csv and then upload into the S3 bucket s3://2021-msia423-cai-hanyu/chocolate.csv.
-
-You can also specify the s3 path & local path using:
-`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload --local_path={local_file_path} --s3path={s3_file_path}`
+#### Downloading data from s3
+`docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py download --s3path s3://2021-msia423-cai-hanyu/chocolate.csv --local_path data/chocolate_data/chocolate.csv`
 
 ### 3. Create MYSQL database
 
@@ -146,19 +144,52 @@ Run the following command to initiate database with name "msia423_db" & create t
 
 `docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py create_db`
 
-### 4.Run Model
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -it chocolate run.py csv_modeling`
+### 4.Run Model Pipeline
+Please remember to export environment variables before running model pipeline (following similar procedure for step 2 and 3):
+
+```
+export AWS_ACCESS_KEY_ID=<Your Access Key ID>
+export AWS_SECRET_ACCESS_KEY=<Your Secret Key ID>
+export MYSQL_USER="RDS Username"
+export MYSQL_PASSWORD="RDS Password"
+export MYSQL_PORT="3306"
+export MYSQL_DB="msia423_db"
+export MYSQL_HOST="MY HOST"
+```
+
+Build docker image
+
+`docker build -f Dockerfile_sh -t chocolate_sh .`
+
+Run model pipeline via 'pipeline.sh'
+
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate_sh pipeline.sh`
 
 ### 5.Upload the chocolate bar records to RDS database for recommendation
+
+The model pipeline in step 4 would automatically upload records to RDS; however, if user want to manually upload data to rds, please use the following command:
+
 `docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds`
 
-Check for RDS database and operate using MYSQL commmands:
-`docker run -it --rm mysql:5.7.33 mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD}`
+Connect to MYSQL database:
+
+`sh connect_mysqldb.sh`
+
+After connecting to MYSQL databse, use the following commands to check if table is successfully added:
+```
+use msia423_db;
+show columns from chocolates;
+```
 
 ### 6.Launch the Web Application
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -it chocolate app.py`
+Build a new docker image for web application
+`docker build -f app/Dockerfile -t chocolate_application`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST -it chocolate_application`
 
-### 4. Test s3.py 
+### 7. Test s3.py 
+
+Build docker image
+`docker build -f Dockerfile_sh -t chocolate_sh .`
+
 Run the following command to test in docker container chocolate:
-
-`docker run chocolate -m pytest`
+`docker run chocolate_sh test.sh`
