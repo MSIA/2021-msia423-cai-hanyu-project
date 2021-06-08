@@ -12,7 +12,7 @@ As one of the most favorite snacks in the United States, the chocolate bar was c
 
 **Mission**:
 
-Users would be prompted to choose their preferences over chocolate bars – such as the chocolate bean type, cocoa percentage, and chocolate bar flavor. Based on the information users provided, the application would give users a rating about the possible chocolate bar combination they choose and recommend three possible chocolate bars to the user according to their taste. The application would use a recommender system for recommendation and regression for rating prediction to achieve this purpose.
+Users would be prompted to choose their preferences over chocolate bars – such as the chocolate bean type, cocoa percentage, and ingredients of chocolate bars. Based on the information users provided, the application would give user 10 recommendations about the possible chocolate bar according to their preferences. The application would use a k-means clustering for recommendation, information like chocolate bar bean name, ratings, cocoa percentage, and flavors would also be given for the products recommended.
 
 Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020 The dataset contains information from 2006 to 2020 in 66 countries about over 1700 chocolate reviews and tastes, chocolate company name, country of the chocolate bean, etc.
 
@@ -20,11 +20,11 @@ Datasets: https://www.kaggle.com/soroushghaderi/chocolate-bar-2020 The dataset c
 
 1.Machine learning performance metric:
 
-Since the recommendation system is unsupervised learning, there is no right or wrong about the recommendation. To ensure that the chocolate bar recommended is both tasty and suits the user’s personal preference, I would use the rating score and similarity score as measurement metrics for the model. In terms of rating, I would use the R-squared score to measure the model – an R-squared score above 0.65 would be acceptable in this scenario.
+Since the recommendation system is unsupervised learning, there is no right or wrong about the recommendation. To ensure that the chocolate bar recommender successfully differentiate and identify similar products. I use silhouette score to measure my k-means clustering recommendation model. A silhouette score > 0.4 would mean that the each product in the k-means clustering model is well matched to its own cluster and is different from products in other clusters.
 
 2.Business metric:
 
-I can use A/B testing to examine the product rating if people choose chocolate bars without the application. If there is a significant growth in rating at the group of consumers who use our recommender system to make their purchase choice, our application has good business value.
+After the application is launched, I would measure the number of clicks to my websites. By measuring the average click number per week, I could infer the popularity of my application -- a higher average cliclk number means the application is popular. Also, I plan to give satisfaction survey to users. The satisfaction survey would ask users to rate the application and give feedback on whether recommendations given by the website is effective.
 
 
 ## Proj Template 
