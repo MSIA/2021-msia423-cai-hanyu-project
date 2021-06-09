@@ -193,6 +193,8 @@ Access by using environment variables set up in .mysqlconfig:
 Access by using SQLALCHEMY_DATABASE_URI:
 `docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e SQLALCHEMY_DATABASE_URI -p 5000:5000 -it chocolate_application`
 
+You may access the website at http://0.0.0.0:5000/ now
+
 ### 7. Test s3.py 
 
 Build docker image
