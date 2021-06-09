@@ -1,14 +1,14 @@
-import traceback
 import logging.config
-from flask import Flask
-from flask import render_template, request, redirect, url_for
-import yaml
+import traceback
 
 import pandas as pd
+import yaml
+from flask import Flask
+from flask import render_template, request
 from flask_sqlalchemy import SQLAlchemy
+
+from src.modeling import get_userinput, predict_user_input
 from src.more_chocolate_plz import Chocolates
-from src.clean_data import clean
-from src.modeling import get_userinput, generate_kmeans, predict_user_input
 
 # export FLASK_DEBUG=1
 # Initialize the Flask application
@@ -27,14 +27,18 @@ logger.debug('Web app log')
 db = SQLAlchemy(app)
 
 # Connect to RDS or local database and query all data
-logger.info('Connecting to '+ app.config['SQLALCHEMY_DATABASE_URI'])
+logger.info('Connecting to %s', app.config['SQLALCHEMY_DATABASE_URI'])
 recs = db.session.query(Chocolates)
 
 
-#load config yaml
-with open('config/config.yaml', "r") as f:
+# load config yaml
+try:
+    with open(app.config['CONFIGS'], "r") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
-        logger.info("Configuration file loaded from %s" % 'config/config.yaml')
+        logger.info("Configuration file loaded from %s", app.config['CONFIGS'])
+except FileNotFoundError:
+    logger.error("Configuration file %s is not found", app.config['CONFIGS'])
+
 
 @app.route('/')
 def index():
@@ -43,7 +47,7 @@ def index():
     """
     try:
         logger.debug("Index page accessed")
-        return render_template('index.html',booleans = app.config['BOOLS'])
+        return render_template('index.html', booleans=app.config['BOOLS'])
     except:
         traceback.print_exc()
         logger.warning("Not able to display loan applications information, error page returned")
@@ -58,14 +62,16 @@ def submit():
     try:
         logger.debug("submmission page accessed")
         # get data from rds 
-        df = pd.read_sql(recs.statement, recs.session.bind)
+        data = pd.read_sql(recs.statement, recs.session.bind)
         # user insert value
-        input_value = get_userinput(request.form["cocoa_percent"], request.form["rating"], request.form["beans"],
-                                    request.form["cocoa_butter"], request.form["vanilla"],request.form["lecithin"],
-                                    request.form["salt"], request.form["sugar"],request.form["sweetener_without_sugar"],
+        input_value = get_userinput(request.form["cocoa_percent"], request.form["rating"],
+                                    request.form["beans"], request.form["cocoa_butter"],
+                                    request.form["vanilla"], request.form["lecithin"],
+                                    request.form["salt"], request.form["sugar"],
+                                    request.form["sweetener_without_sugar"],
                                     **config['modeling']['get_userinput'])
         # get prediction result
-        recommendation = predict_user_input(df, input_value, **config['modeling']['predict_user_input'])
+        recommendation = predict_user_input(data, input_value, **config['modeling']['predict_user_input'])
         return render_template('submit.html', rec=recommendation.values)
     except:
         traceback.print_exc()
@@ -74,6 +80,4 @@ def submit():
     
 
 if __name__ == '__main__':
-    logger.debug(app.config["HOST"])
-    logger.debug(app.config["PORT"])
     app.run(debug=app.config["DEBUG"], port=app.config["PORT"], host=app.config["HOST"])

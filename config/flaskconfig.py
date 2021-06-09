@@ -8,8 +8,10 @@ HOST = "0.0.0.0"
 SQLALCHEMY_ECHO = False  # If true, SQL for queries made will be printed
 MAX_ROWS_SHOW = 100
 
-#boolean list 
-BOOLS = ['Yes','No']
+# boolean list used for index html
+BOOLS = ['Yes', 'No']
+# config file path
+CONFIGS = 'config/config.yaml'
 
 # Connection string
 DB_HOST = os.environ.get("MYSQL_HOST")
