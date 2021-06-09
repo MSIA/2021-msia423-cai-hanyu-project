@@ -60,6 +60,8 @@ After the application is launched, I would measure the number of clicks to my we
 ├── data                              <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git. 
 │   ├── external/                     <- External data sources, usually reference data,  will be synced with git
 │   ├── sample/                       <- Sample data used for code development and testing, will be synced with git
+│   ├── chocolate_data/               <- The raw data folder
+│   ├── clean_data.csv                <- The cleaned data after processing
 │
 ├── deliverables/                     <- Any white papers, presentations, final work products that are presented or delivered to a stakeholder 
 │
@@ -73,7 +75,6 @@ After the application is launched, I would measure the number of clicks to my we
 │   ├── archive/                      <- Develop notebooks no longer being used.
 │   ├── deliver/                      <- Notebooks shared with others / in final state
 │   ├── develop/                      <- Current notebooks being used in development.
-│   ├── template.ipynb                <- Template notebook for analysis with useful imports, helper functions, and SQLAlchemy setup. 
 │
 ├── reference/                        <- Any reference material relevant to the project
 │
@@ -81,12 +82,16 @@ After the application is launched, I would measure the number of clicks to my we
 │
 ├── test/                             <- Files necessary for running model tests (see documentation below) 
 │   ├── test_s3.py                    <- Test the s3.py functioning
-│
-├── test/                             <- Files necessary for running model tests (see documentation below)  
+│   ├── test_clean_data.py            <- Test the clean_data.py functioning
+│   ├── test_modeling.py              <- Test the modeling.py functioning
 │
 ├── app.py                            <- Flask wrapper for running the model 
 ├── run.py                            <- Simplifies the execution of one or more of the src scripts  
 ├── requirements.txt                  <- Python package dependencies 
+├── pipeline.sh                       <- shell commands to run model pipeline 
+├── connect_mysqldb.sh                <- shell commands to connect mysql database
+├── connect_mysqldb.sh                <- shell commands to connect mysql database
+├── connect_mysqldb.sh                <- shell commands to connect mysql database
 ```
 
 ## Running the app
