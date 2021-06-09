@@ -4,11 +4,11 @@ import pkg_resources
 
 import yaml
 
+from config.flaskconfig import SQLALCHEMY_DATABASE_URI
+from src.clean_data import clean, standardization, read_data
+from src.modeling import generate_kmeans, model_evaluation
 from src.more_chocolate_plz import create_db, upload_to_rds
 from src.s3 import upload_file_to_s3, download_file_from_s3
-from config.flaskconfig import SQLALCHEMY_DATABASE_URI
-from src.clean_data import clean, standardization
-from src.modeling import generate_kmeans, model_evaluation
 
 logging.config.fileConfig(pkg_resources.resource_filename(__name__, "config/logging/local.conf"),
                           disable_existing_loggers=False)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     sb_download.add_argument("--local_path", default=None, help="The local path")
 
     # Sub-parser for modeling from csv
-    sb_run_modeling = subparsers.add_parser("run_modeling", help="Modeling and output recommendations to user")
+    sb_run_modeling = subparsers.add_parser("run_modeling", help="Modeling to give recommendations")
     sb_run_modeling.add_argument("--local_path", default=None, help="The local path")
     sb_run_modeling.add_argument('--config', default=None, help='Path to configuration file')
 
@@ -44,16 +44,10 @@ if __name__ == '__main__':
     sb_rds = subparsers.add_parser("store_rds", help="store cleaned table into RDS database")
     sb_rds.add_argument('--file_path', default=None, help='path of clean data')
     sb_rds.add_argument("--engine_string", default=SQLALCHEMY_DATABASE_URI,
-                           help="SQLAlchemy connection URI for database")
+                        help="SQLAlchemy connection URI for database")
 
     args = parser.parse_args()
     sb_used = args.subparser_name
-
-    if  sb_used == "run_modeling":
-        # Load configuration file for parameters and tmo path
-        with open(args.config, "r") as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-            logger.info("Configuration file loaded from %s" % args.config)
 
     if sb_used == "upload":
         upload_file_to_s3(args.local_path, args.s3path)
@@ -62,8 +56,17 @@ if __name__ == '__main__':
     elif sb_used == "create_db":
         create_db(args.engine_string)
     elif sb_used == "run_modeling":
+        # load configuration file for parameters and tmo path
+        try:
+            with open(args.config, "r") as f:
+                config = yaml.load(f, Loader=yaml.FullLoader)
+                logger.info("Configuration file loaded from %s", args.config)
+        except FileNotFoundError:
+            logger.error("Configuration file %s is not found", args.config)
+        # read in raw data
+        raw_df = read_data(args.local_path, **config['clean_data']['read_data'])
         # clean data
-        df = clean(args.local_path, **config['clean_data']['clean'])
+        df = clean(raw_df, **config['clean_data']['clean'])
         # standardization
         scale_df = standardization(df, **config['clean_data']['standardization'])
         # generate k means model and save to joblib

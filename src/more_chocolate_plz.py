@@ -1,11 +1,9 @@
 import logging.config
-import os
 
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import sessionmaker
-from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -20,8 +18,7 @@ class Chocolates(Base):
     """
 
     __tablename__ = "chocolates"
-    chocolate_key = Column(Integer, primary_key=True)
-    index = Column(Integer, unique=False, nullable=False)
+    index = Column(Integer, primary_key=True)
     company = Column(String(25), unique=False, nullable=False)
     specific_bean_origin_or_bar_name = Column(String(50), unique=False, nullable=False)
     cocoa_percent = Column(Float(), unique=False, nullable=False)
@@ -68,23 +65,23 @@ def add_rows(file_path, session):
         None
     """
 
-    df = pd.read_csv(file_path)
+    data = pd.read_csv(file_path)
 
-    for i in range(len(df)):
-        each_row = Chocolates(index=int(df['index'][i]),
-                             company=str(df['company'][i]),
-                             specific_bean_origin_or_bar_name=str(df['specific_bean_origin_or_bar_name'][i]),
-                             cocoa_percent=float(df['cocoa_percent'][i]),
-                             rating=float(df['rating'][i]),
-                             beans=int(df['beans'][i]),
-                             cocoa_butter=int(df['cocoa_butter'][i]),
-                             vanilla=int(df['vanilla'][i]),
-                             lecithin=int(df['lecithin'][i]),
-                             salt=int(df['salt'][i]),
-                             sugar=int(df['sugar'][i]),
-                             sweetener_without_sugar=int(df['sweetener_without_sugar'][i]),
-                             first_taste = str(df['first_taste'][i]),
-                             second_taste=str(df['second_taste'][i]))
+    for i in range(len(data)):
+        each_row = Chocolates(company=str(data['company'][i]),
+                              specific_bean_origin_or_bar_name
+                              =str(data['specific_bean_origin_or_bar_name'][i]),
+                              cocoa_percent=float(data['cocoa_percent'][i]),
+                              rating=float(data['rating'][i]),
+                              beans=int(data['beans'][i]),
+                              cocoa_butter=int(data['cocoa_butter'][i]),
+                              vanilla=int(data['vanilla'][i]),
+                              lecithin=int(data['lecithin'][i]),
+                              salt=int(data['salt'][i]),
+                              sugar=int(data['sugar'][i]),
+                              sweetener_without_sugar=int(data['sweetener_without_sugar'][i]),
+                              first_taste=str(data['first_taste'][i]),
+                              second_taste=str(data['second_taste'][i]))
 
         session.add(each_row)
 
@@ -115,7 +112,7 @@ def upload_to_rds(file_path, engine_string):
         # write records into table
         add_rows(file_path, session)
         logger.info("Database created successfully with all records added")
-    except Exception as e:
-        logger.error(e)
+    except Exception as errors:
+        logger.error(errors)
     finally:
         session.close()

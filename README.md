@@ -46,47 +46,62 @@ After the application is launched, I would measure the number of clicks to my we
 
 ```
 ├── README.md                         <- You are here
-├── api
+├── app
 │   ├── static/                       <- CSS, JS files that remain static
 │   ├── templates/                    <- HTML (or other code) that is templated and changes based on a set of inputs
-│   ├── boot.sh                       <- Start up script for launching app in Docker container.
+│   ├── boot.sh                       <- Start up script for launching app in Docker container
 │   ├── Dockerfile                    <- Dockerfile for building image to run app  
 │
 ├── config                            <- Directory for configuration files 
 │   ├── local/                        <- Directory for keeping environment variables and other local configurations that *do not sync** to Github 
 │   ├── logging/                      <- Configuration of python loggers
 │   ├── flaskconfig.py                <- Configurations for Flask API 
+│   ├── config.yaml.                  <- Configuration File for data cleaning and model pipeline scripts
 │
-├── data                              <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git. 
+├── data                              <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git
 │   ├── external/                     <- External data sources, usually reference data,  will be synced with git
 │   ├── sample/                       <- Sample data used for code development and testing, will be synced with git
+│   ├── chocolate_data/               <- The raw data folder
+│   ├── clean_data.csv                <- The cleaned data after processing 
+│   ├── performance_metric.csv        <- The model performance metric csv
 │
 ├── deliverables/                     <- Any white papers, presentations, final work products that are presented or delivered to a stakeholder 
+│   ├── chocolate_slides.pdf          <- The presentation slides
 │
-├── docs/                             <- Sphinx documentation based on Python docstrings. Optional for this project. 
+├── docs/                             <- Sphinx documentation based on Python docstrings. Optional for this project 
 │
 ├── figures/                          <- Generated graphics and figures to be used in reporting, documentation, etc
 │
 ├── models/                           <- Trained model objects (TMOs), model predictions, and/or model summaries
+│   ├── kmeans.joblib                 <- K-means clustering model
 │
 ├── notebooks/
-│   ├── archive/                      <- Develop notebooks no longer being used.
+│   ├── archive/                      <- Develop notebooks no longer being used
 │   ├── deliver/                      <- Notebooks shared with others / in final state
-│   ├── develop/                      <- Current notebooks being used in development.
-│   ├── template.ipynb                <- Template notebook for analysis with useful imports, helper functions, and SQLAlchemy setup. 
+│   ├── develop/                      <- Current notebooks being used in development
 │
 ├── reference/                        <- Any reference material relevant to the project
 │
 ├── src/                              <- Source data for the project 
+│   ├── s3.py                         <- Python script that contain s3 related operations
+│   ├── clean_data.py                 <- Python script that contain data cleaning operations
+│   ├── modeling.py                   <- Python script that contain model pipeline operations
+│   ├── more_chocolate_plz.py         <- Python script that contain rds related operations
 │
 ├── test/                             <- Files necessary for running model tests (see documentation below) 
 │   ├── test_s3.py                    <- Test the s3.py functioning
-│
-├── test/                             <- Files necessary for running model tests (see documentation below)  
+│   ├── test_clean_data.py            <- Test the clean_data.py functioning
+│   ├── test_modeling.py              <- Test the modeling.py functioning
 │
 ├── app.py                            <- Flask wrapper for running the model 
 ├── run.py                            <- Simplifies the execution of one or more of the src scripts  
 ├── requirements.txt                  <- Python package dependencies 
+├── Dockerfile                        <- Dockerfile for running s3, rds related functioning
+├── Dockerfile_sh                     <- Dockerfile for running pipeline.sh and test.sh
+├── requirements.txt                  <- Python package dependencies 
+├── pipeline.sh                       <- shell commands to run model pipeline 
+├── connect_mysqldb.sh                <- shell commands to connect mysql database
+├── test.sh                           <- shell commands to run test file
 ```
 
 ## Running the app
@@ -167,15 +182,17 @@ Run model pipeline via 'pipeline.sh'
 
 ### 5.Upload the chocolate bar records to RDS database for recommendation
 
-The model pipeline in step 4 would automatically upload records to RDS; however, if user want to manually upload data to rds, please use the following command:
+**(Note: Please first check if data alreay exists in RDS database. If so, please DON'T re-upload data, which may causes duplicate issues in flask app.)**
 
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds`
+The following command would upload the pre-processed dataset to RDS for prediction use:
+
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds --file_path data/clean_data.csv`
 
 Connect to MYSQL database:
 
 `sh connect_mysqldb.sh`
 
-After connecting to MYSQL databse, use the following commands to check if table is successfully added:
+Use the following commands to check if table is successfully added to RDS database:
 ```
 use msia423_db;
 show columns from chocolates;
@@ -184,7 +201,14 @@ show columns from chocolates;
 ### 6.Launch the Web Application
 Build a new docker image for web application
 `docker build -f app/Dockerfile -t chocolate_application`
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST -it chocolate_application`
+
+Access by using environment variables set up in .mysqlconfig:
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST -p 5000:5000 -it chocolate_application`
+
+Access by using SQLALCHEMY_DATABASE_URI:
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e SQLALCHEMY_DATABASE_URI -p 5000:5000 -it chocolate_application`
+
+You may access the website at http://0.0.0.0:5000/ now
 
 ### 7. Test s3.py 
 

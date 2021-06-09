@@ -5,7 +5,8 @@ import boto3
 import botocore
 
 
-logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    level=logging.DEBUG)
 logging.getLogger("botocore").setLevel(logging.ERROR)
 logging.getLogger("s3transfer").setLevel(logging.ERROR)
 logging.getLogger("urllib3").setLevel(logging.ERROR)
@@ -56,7 +57,8 @@ def upload_file_to_s3(local_path, s3path):
     try:
         bucket.upload_file(local_path, s3_just_path)
     except botocore.exceptions.NoCredentialsError:
-        logger.error('Please provide AWS credentials via AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables.')
+        logger.error('Please provide AWS credentials via AWS_ACCESS_KEY_ID and AWS_SECRET_'
+                     'ACCESS_KEY env variables.')
     else:
         logger.info('Data uploaded from %s to %s', local_path, s3path)
 
@@ -80,7 +82,8 @@ def download_file_from_s3(local_path, s3path):
     try:
         bucket.download_file(s3_just_path, local_path)
     except botocore.exceptions.NoCredentialsError:
-        logger.error('Please provide AWS credentials via AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables.')
+        logger.error('Please provide AWS credentials via AWS_ACCESS_KEY_ID and '
+                     'AWS_SECRET_ACCESS_KEY env variables.')
     else:
         logger.info('Data downloaded from %s to %s', s3path, local_path)
 
