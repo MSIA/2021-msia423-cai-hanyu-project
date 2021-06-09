@@ -123,9 +123,11 @@ export AWS_SECRET_ACCESS_KEY="AWS KEY"
 The raw data is located at  data/chocolate_data/chocolate.csv
 
 #### Uploading raw data to s3 
+
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py upload --s3path s3://2021-msia423-cai-hanyu/chocolate.csv --local_path data/chocolate_data/chocolate.csv`
 
 #### Downloading data from s3
+
 `docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate run.py download --s3path s3://2021-msia423-cai-hanyu/chocolate.csv --local_path data/chocolate_data/chocolate.csv`
 
 ### 3. Create MYSQL database
@@ -190,12 +192,15 @@ show columns from chocolates;
 
 ### 6.Launch the Web Application
 Build a new docker image for web application
+
 `docker build -f app/Dockerfile -t chocolate_application`
 
 Access by using environment variables set up in .mysqlconfig:
+
 `docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST -p 5000:5000 -it chocolate_application`
 
 Access by using SQLALCHEMY_DATABASE_URI:
+
 `docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e SQLALCHEMY_DATABASE_URI -p 5000:5000 -it chocolate_application`
 
 You may access the website at http://0.0.0.0:5000/ now
@@ -203,7 +208,9 @@ You may access the website at http://0.0.0.0:5000/ now
 ### 7. Test s3.py 
 
 Build docker image
+
 `docker build -f Dockerfile_sh -t chocolate_sh .`
 
 Run the following command to test in docker container chocolate:
+
 `docker run chocolate_sh test.sh`
