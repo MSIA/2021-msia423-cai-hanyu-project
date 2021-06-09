@@ -160,17 +160,7 @@ Run the following command to initiate database with name "msia423_db" & create t
 `docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py create_db`
 
 ### 4.Run Model Pipeline
-Please remember to export environment variables before running model pipeline (following similar procedure for step 2 and 3):
-
-```
-export AWS_ACCESS_KEY_ID=<Your Access Key ID>
-export AWS_SECRET_ACCESS_KEY=<Your Secret Key ID>
-export MYSQL_USER="RDS Username"
-export MYSQL_PASSWORD="RDS Password"
-export MYSQL_PORT="3306"
-export MYSQL_DB="msia423_db"
-export MYSQL_HOST="MY HOST"
-```
+Please remember to export environment variables before running model pipeline in order to connect to S3 bucket (following the same procedure for step 2)
 
 Build docker image
 
@@ -178,11 +168,11 @@ Build docker image
 
 Run model pipeline via 'pipeline.sh'
 
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate_sh pipeline.sh`
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY chocolate_sh pipeline.sh`
 
 ### 5.Upload the chocolate bar records to RDS database for recommendation
 
-**(Note: Please first check if data alreay exists in RDS database. If so, please DON'T re-upload data, which may causes duplicate issues in flask app.)**
+(Note: Please first check if data alreay exists in RDS database. If so, please DON'T re-upload data, which may causes duplicate issues in flask app.)
 
 The following command would upload the pre-processed dataset to RDS for prediction use:
 
