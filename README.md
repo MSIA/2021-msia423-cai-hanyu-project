@@ -167,15 +167,17 @@ Run model pipeline via 'pipeline.sh'
 
 ### 5.Upload the chocolate bar records to RDS database for recommendation
 
-The model pipeline in step 4 would automatically upload records to RDS; however, if user want to manually upload data to rds, please use the following command:
+**(Note: Please first check if data alreay exists in RDS database. If so, please DON'T re-upload data, which may causes duplicate issues in flask app.)**
 
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds`
+The following command would upload the pre-processed dataset to RDS for prediction use:
+
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST chocolate run.py store_rds --file_path data/clean_data.csv`
 
 Connect to MYSQL database:
 
 `sh connect_mysqldb.sh`
 
-After connecting to MYSQL databse, use the following commands to check if table is successfully added:
+Use the following commands to check if table is successfully added to RDS database:
 ```
 use msia423_db;
 show columns from chocolates;
@@ -184,7 +186,12 @@ show columns from chocolates;
 ### 6.Launch the Web Application
 Build a new docker image for web application
 `docker build -f app/Dockerfile -t chocolate_application`
-`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST -it chocolate_application`
+
+Access by using environment variables set up in .mysqlconfig:
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e MYSQL_USER -e MYSQL_PASSWORD -e MYSQL_PORT -e MYSQL_DB -e MYSQL_HOST -p 5000:5000 -it chocolate_application`
+
+Access by using SQLALCHEMY_DATABASE_URI:
+`docker run --mount type=bind,source="$(pwd)"/data,target=/app/data -e SQLALCHEMY_DATABASE_URI -p 5000:5000 -it chocolate_application`
 
 ### 7. Test s3.py 
 
